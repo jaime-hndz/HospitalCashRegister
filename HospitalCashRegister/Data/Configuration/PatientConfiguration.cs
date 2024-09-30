@@ -16,6 +16,8 @@ namespace HospitalCashRegister.Data.Configuration
             builder.Property(x => x.PhoneNumber1).HasColumnName("PhoneNumber1");
             builder.Property(x => x.PhoneNumber2).HasColumnName("PhoneNumber2");
             builder.Property(x => x.Address).HasColumnName("Address");
+            builder.Property(x => x.Created).HasColumnName("Created");
+            builder.Property(x => x.Modified).HasColumnName("Modified");
             builder.Property(x => x.Status).HasColumnName("Status");
 
 

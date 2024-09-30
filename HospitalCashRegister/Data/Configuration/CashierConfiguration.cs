@@ -16,6 +16,9 @@ namespace HospitalCashRegister.Data.Configuration
             builder.Property(x => x.FullName).HasColumnName("FullName");
             builder.Property(x => x.Admin).HasColumnName("Admin");
             builder.Property(x => x.BranchId).HasColumnName("BranchId");
+            builder.Property(x => x.LastSeen).HasColumnName("LastSeen");
+            builder.Property(x => x.Created).HasColumnName("Created");
+            builder.Property(x => x.Modified).HasColumnName("Modified");
             builder.Property(x => x.Status).HasColumnName("Status");
 
             builder.HasOne<Models.Branch>(x => x.Branch).WithMany().HasForeignKey(t => t.BranchId);

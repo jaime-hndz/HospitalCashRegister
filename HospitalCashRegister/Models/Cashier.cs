@@ -8,6 +8,9 @@ namespace HospitalCashRegister.Models
         public string FullName { get; set; } = string.Empty;
         public bool Admin { get; set; } = false;
         public string? BranchId { get; set; }
+        public DateTime? LastSeen { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime? Modified { get; set; }
         public bool Status { get; set; } = true;
         public Branch? Branch { get; set; } = default!;
     }

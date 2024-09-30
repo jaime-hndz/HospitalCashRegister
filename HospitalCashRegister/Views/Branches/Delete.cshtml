@@ -1,0 +1,27 @@
+﻿@model Branch
+
+@{
+    ViewData["Title"] = "Eliminar Estación";
+}
+
+<h2>Eliminar Estación</h2>
+
+<h3>¿Estás seguro que quieres eliminiar esta?</h3>
+<div>
+    <h4>Estación</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nombre
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Cancelar</a>
+    </form>
+</div>

@@ -8,6 +8,8 @@ namespace HospitalCashRegister.Models
         public string PhoneNumber1 { get; set; } = string.Empty;
         public string PhoneNumber2 { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime? Modified { get; set; }
         public bool Status { get; set; } = true;
     }
 }

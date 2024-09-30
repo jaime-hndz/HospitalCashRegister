@@ -42,6 +42,11 @@ namespace HospitalCashRegister.Controllers
                 return View();
             }
 
+            cashier.LastSeen = DateTime.Now;
+
+            _context.Cashiers.Update(cashier);
+            await _context.SaveChangesAsync();
+
             // Aquí puedes implementar tu lógica de autenticación
             // Por ejemplo, usando Claims para manejar sesiones o cookies
             await SignInUser(cashier);
@@ -58,29 +63,23 @@ namespace HospitalCashRegister.Controllers
 
         private async Task SignInUser(Cashier cashier)
         {
-            // Implementar la lógica de inicio de sesión
-            // Usar ClaimsPrincipal para autenticar al usuario
-
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, cashier.Username),
-            new Claim(ClaimTypes.Role, "User")
-        };
+            {
+                new Claim(ClaimTypes.Name, cashier.Username),
+                new Claim(ClaimTypes.Role, "User")
+            };
 
             var identity = new ClaimsIdentity(claims, "Login");
             var principal = new ClaimsPrincipal(identity);
 
-            // Usar el servicio de autenticación para establecer la cookie de sesión
             await HttpContext.SignInAsync(principal);
         }
 
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            // Cerrar sesión
             await HttpContext.SignOutAsync("CookieAuth");
 
-            // Redirigir al usuario después de cerrar sesión
             return RedirectToAction("Login", "Authentication");
         }
     }

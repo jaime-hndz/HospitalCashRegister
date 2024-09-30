@@ -1,0 +1,24 @@
+﻿@model Branch
+
+@{
+    ViewData["Title"] = "Detalles Estación";
+}
+
+<h2>Detalles Estación</h2>
+
+<div>
+    <h4>Estación</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nombre
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <a asp-action="Index">Volver a la lista</a>
+</p>
