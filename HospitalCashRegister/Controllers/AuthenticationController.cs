@@ -10,10 +10,12 @@ namespace HospitalCashRegister.Controllers
     public class AuthenticationController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AuthenticationController> _logger;
 
-        public AuthenticationController(ApplicationDbContext context)
+        public AuthenticationController(ApplicationDbContext context, ILogger<AuthenticationController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
