@@ -9,6 +9,13 @@ namespace HospitalCashRegister.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            Branches = Set<Branch>();
+            Cashiers = Set<Cashier>();
+            Patients = Set<Patient>();
+            MedicalServices = Set<MedicalService>();
+            Transactions = Set<Transaction>();
+            CashRegisters = Set<CashRegister>();
+            Receipts = Set<Receipt>();
         }
 
         public DbSet<Branch> Branches { get; set; }
@@ -22,35 +29,7 @@ namespace HospitalCashRegister.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configura las relaciones entre tablas
-            modelBuilder.Entity<Cashier>()
-                .HasOne<Branch>()
-                .WithMany()
-                .HasForeignKey(c => c.BranchId);
-
-            modelBuilder.Entity<Transaction>()
-                .HasOne<Cashier>()
-                .WithMany()
-                .HasForeignKey(t => t.CashierId);
-
-            modelBuilder.Entity<Transaction>()
-                .HasOne<Patient>()
-                .WithMany()
-                .HasForeignKey(t => t.PatientId);
-
-            modelBuilder.Entity<Transaction>()
-                .HasOne<MedicalService>()
-                .WithMany()
-                .HasForeignKey(t => t.ServiceId);
-
-            modelBuilder.Entity<CashRegister>()
-                .HasOne<Cashier>()
-                .WithMany()
-                .HasForeignKey(cr => cr.CashierId);
-
-            modelBuilder.Entity<Receipt>()
-                .HasOne<Transaction>()
-                .WithMany()
-                .HasForeignKey(r => r.TransactionId);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }

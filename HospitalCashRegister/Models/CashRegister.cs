@@ -10,6 +10,7 @@ namespace HospitalCashRegister.Models
         public decimal CashOutflow { get; set; } = 0.00M;
         public decimal FinalAmount { get; set; } = 0.00M;
         public CashRegisterStatus CashRegisterStatusId { get; set; } = CashRegisterStatus.Open;
+        public Cashier Cashier { get; set; } = default!;
     }
 
     public enum CashRegisterStatus
