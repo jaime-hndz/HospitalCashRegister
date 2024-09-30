@@ -29,7 +29,7 @@ namespace HospitalCashRegister.Controllers
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Debe ingresar todos los datos");
                 return View();
             }
 
@@ -38,7 +38,7 @@ namespace HospitalCashRegister.Controllers
 
             if (cashier == null || !VerifyPassword(cashier, password))
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Datos erróneos");
                 return View();
             }
 
@@ -72,6 +72,16 @@ namespace HospitalCashRegister.Controllers
 
             // Usar el servicio de autenticación para establecer la cookie de sesión
             await HttpContext.SignInAsync(principal);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            // Cerrar sesión
+            await HttpContext.SignOutAsync("CookieAuth");
+
+            // Redirigir al usuario después de cerrar sesión
+            return RedirectToAction("Login", "Authentication");
         }
     }
 }

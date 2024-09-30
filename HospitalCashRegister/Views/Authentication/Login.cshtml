@@ -3,17 +3,17 @@
 
 <form asp-action="Login" method="post">
     <div>
-        <label for="username">Username</label>
+        <label for="username">Usuario</label>
         <input type="text" name="username" id="username" />
     </div>
     <div>
-        <label for="password">Password</label>
+        <label for="password">Contraseña</label>
         <input type="password" name="password" id="password" />
     </div>
-    <button type="submit">Login</button>
+    <button type="submit">Iniciar sesión</button>
 </form>
 
 @if (ViewData.ModelState.IsValid == false)
 {
-    <div class="text-danger">Login attempt failed</div>
+    <div class="text-danger">No se validaron los datos</div>
 }
