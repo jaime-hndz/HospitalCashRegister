@@ -19,6 +19,7 @@ builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
         restrictedToMinimumLevel: LogEventLevel.Information
     ));
 
+builder.Services.AddSession();
 // Configurar servicios de MVC
 builder.Services.AddControllersWithViews();
 
@@ -43,6 +44,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

@@ -21,22 +21,20 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.Identity.IsAuthenticated) {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="Index">Registro de caja</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Cashiers" asp-action="Index">Cajeros</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Patients" asp-action="Index">Pacientes</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Branches" asp-action="Index">Sucursales</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Branches" asp-action="Index">Sucursal</a>
-                            </li>                            
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MedicalServices" asp-action="Index">Servicios</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Histórico Transacciones</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="Index">Histórico Días</a>
+                            </li>
+
                             
-@*                             <li class="nav-item">
+                            @*                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li> *@
                             <li>

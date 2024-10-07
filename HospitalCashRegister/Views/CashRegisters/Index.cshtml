@@ -1,0 +1,47 @@
+﻿@model IEnumerable<CashRegister>
+
+@{
+    ViewData["Title"] = "Histórico días";
+}
+
+<h2>Histórico días</h2>
+
+<p>
+    <a asp-action="Start">Iniciar día</a>
+    <a asp-action="End">Terminar día</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha de inicio</th>
+            <th>Fecha final</th>
+            <th>Monto inicial</th>
+            <th>Monto final</th>
+            <th>Entrada</th>
+            <th>Salida</th>
+            <th>Estatus</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.OpeningDate</td>
+                <td>@item.ClosingDate</td>
+                <td>@item.InitialAmount</td>
+                <td>@item.FinalAmount</td>
+                <td>@item.CashInflow</td>
+                <td>@item.CashOutflow</td>
+                <td>@item.CashRegisterStatusId</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                    @* |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

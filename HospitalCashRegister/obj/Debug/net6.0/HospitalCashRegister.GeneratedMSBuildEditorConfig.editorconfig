@@ -16,6 +16,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Jojo\Documents\TRABAJO FINAL IDS3\HospitalCashRegister\HospitalCashRegister
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Shared/GoIndex.razor]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEdvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Authentication/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aGVudGljYXRpb25cTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -58,6 +62,26 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Cashiers/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaGllcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/End.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xFbmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/Start.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Home/Index.cshtml]

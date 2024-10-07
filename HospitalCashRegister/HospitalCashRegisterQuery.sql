@@ -76,10 +76,10 @@ CREATE TABLE CashRegisterStatus (
     Value VARCHAR(50) NOT NULL
 );
 
-
 CREATE TABLE CashRegister (
     _id VARCHAR(50) PRIMARY KEY,
     CashierId VARCHAR(50),
+	BranchId VARCHAR(50),
     OpeningDate DATETIME,
 	ClosingDate DATETIME,
     InitialAmount DECIMAL(10, 2) NOT NULL,
@@ -88,6 +88,7 @@ CREATE TABLE CashRegister (
     FinalAmount DECIMAL(10, 2) DEFAULT 0.00,
     CashRegisterStatusId INT,
     FOREIGN KEY (CashierId) REFERENCES Cashier(_id),
+	FOREIGN KEY (BranchId) REFERENCES Branch(_id),
     FOREIGN KEY (CashRegisterStatusId) REFERENCES CashRegisterStatus(_id)
 );
 

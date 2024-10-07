@@ -35,6 +35,7 @@ namespace HospitalCashRegister.Controllers
             }
 
             var cashier = await _context.Cashiers
+                .Include(c => c.Branch)
                 .FirstOrDefaultAsync(u => u.Username == username);
 
             if (cashier == null || !VerifyPassword(cashier, password))
@@ -69,7 +70,12 @@ namespace HospitalCashRegister.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, cashier.Username),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, "User"),
+                new Claim("FullName", cashier.FullName),
+                new Claim("Admin", cashier.Admin.ToString()),
+                new Claim("BranchId", cashier.BranchId != null ? cashier.BranchId : ""),
+                new Claim("BranchName", cashier.Branch != null ? cashier.Branch.Name : "")
+
             };
 
             var identity = new ClaimsIdentity(claims, "Login");
@@ -82,6 +88,7 @@ namespace HospitalCashRegister.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("CookieAuth");
+            HttpContext.Session.Clear();
 
             return RedirectToAction("Login", "Authentication");
         }
