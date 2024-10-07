@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "j2VS5BGGWtl0m8uHNom95+AmQOaVHvn9w9f/lV09jJx8Livu2gkMwbUcEdh2jFp5RB8+BU8sRMCZI/piruJSVw==",
+  "dgSpecHash": "XXsx5/j7qNZl4iOrUK4Dz8x2xhm6kQC2MTdxQAsDqi5c7MivpYkA+LVaI5JtWkczF2rIgIv+sv9uFbVKhYbJKg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jojo\\Documents\\TRABAJO FINAL IDS3\\HospitalCashRegister\\HospitalCashRegister\\HospitalCashRegister.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Jojo\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Jojo\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Jojo\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.33\\microsoft.aspnetcore.cryptography.internal.6.0.33.nupkg.sha512",
     "C:\\Users\\Jojo\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.33\\microsoft.aspnetcore.cryptography.keyderivation.6.0.33.nupkg.sha512",

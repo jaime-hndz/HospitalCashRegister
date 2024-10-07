@@ -1,19 +1,23 @@
-﻿@model IEnumerable<Branch>
+﻿@model IEnumerable<Cashier>
 
 @{
-    ViewData["Title"] = "Sucursales";
+    ViewData["Title"] = "Cajeros";
 }
 
-<h2>Sucursales</h2>
+<h2>Cajeros</h2>
 
 <p>
-    <a asp-action="Create">Crear una nueva Sucursal</a>
+    <a asp-action="Create">Crear un nuevo Cajero</a>
 </p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Nombre completo</th>
+            <th>Sucursal</th>
+            <th>Administrador</th>
+
             <th></th>
         </tr>
     </thead>
@@ -21,7 +25,10 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Name</td>
+                <td>@item.Username</td>
+                <td>@item.FullName</td>
+                <td>@item.Branch?.Name</td>
+                <td>@item.Admin</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |

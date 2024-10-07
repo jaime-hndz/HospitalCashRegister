@@ -48,12 +48,20 @@ CREATE TABLE TransactionType (
     Value VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE TransactionStatus (
+    _id INT PRIMARY KEY,
+    Value VARCHAR(50) NOT NULL
+);
+
+
 CREATE TABLE "Transaction" (
     _id VARCHAR(50) PRIMARY KEY,
     CashierId VARCHAR(50),
     PatientId VARCHAR(50),
     ServiceId VARCHAR(50),
+	CashRegisterId VARCHAR(50),
     TransactionTypeId INT NOT NULL,
+    TransactionStatusId INT NOT NULL,
     Amount DECIMAL(10, 2) NOT NULL,
     Date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (CashierId) REFERENCES Cashier(_id),
@@ -72,7 +80,8 @@ CREATE TABLE CashRegisterStatus (
 CREATE TABLE CashRegister (
     _id VARCHAR(50) PRIMARY KEY,
     CashierId VARCHAR(50),
-    OpeningDate DATE,
+    OpeningDate DATETIME,
+	ClosingDate DATETIME,
     InitialAmount DECIMAL(10, 2) NOT NULL,
     CashInflow DECIMAL(10, 2) DEFAULT 0.00,
     CashOutflow DECIMAL(10, 2) DEFAULT 0.00,
@@ -91,5 +100,31 @@ CREATE TABLE Receipt (
 );
 
 
+INSERT INTO TransactionStatus(_id, value)
+VALUES (0, 'pending')
+INSERT INTO TransactionStatus(_id, value)
+VALUES (1, 'applied')
+INSERT INTO TransactionStatus(_id, value)
+VALUES (2, 'rollback')
+
+
+
+
 INSERT INTO Cashier (_id, Username, Password, Fullname)
 VALUES ('8e7ba79d-3cde-46e7-b07e-44d7c25b4f33','jaime', '1234', 'Jaime Hernandez')
+
+
+INSERT INTO TransactionType(_id, value)
+VALUES (0, 'CashInflow')
+
+INSERT INTO TransactionType(_id, value)
+VALUES (1, 'CashOutflow')
+
+INSERT INTO TransactionType(_id, value)
+VALUES (2, 'ServicePayment')
+
+INSERT INTO CashRegisterStatus(_id, value)
+VALUES (0, 'Open');
+INSERT INTO CashRegisterStatus(_id, value)
+VALUES (1, 'Closed');
+

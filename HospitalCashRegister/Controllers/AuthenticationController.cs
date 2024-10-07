@@ -1,4 +1,5 @@
-﻿using HospitalCashRegister.Data;
+﻿using BCrypt.Net;
+using HospitalCashRegister.Data;
 using HospitalCashRegister.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -56,9 +57,11 @@ namespace HospitalCashRegister.Controllers
 
         private bool VerifyPassword(Cashier user, string password)
         {
-            // Verificar que el hash de la contraseña coincide
-            // Suponiendo que PasswordHash es un hash almacenado de la contraseña
-            return true;
+            bool passwordMatches = BCrypt.Net.BCrypt.Verify(password, user.Password) ||
+                                   BCrypt.Net.BCrypt.EnhancedVerify(password, user.Password,
+                                       HashType.SHA256);
+
+            return passwordMatches;
         }
 
         private async Task SignInUser(Cashier cashier)

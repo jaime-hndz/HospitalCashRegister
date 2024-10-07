@@ -1,0 +1,46 @@
+﻿@model Cashier
+
+@{
+    ViewData["Title"] = "Editar Cajero";
+}
+
+<h2>Editar Cajero</h2>
+
+<h4>Cajero</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Username" class="control-label">Usuario cajero</label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+
+                <label asp-for="Password" class="control-label">Contraseña</label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+                <label asp-for="FullName" class="control-label">Nombre completo</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+
+                <label asp-for="Admin" class="control-label">Administrador</label>
+                <input type="checkbox" asp-for="Admin" id="adminCheckbox" />
+
+                <div id="branchField">
+                    <label asp-for="BranchId" class="control-label">Sucursal</label>
+                    <select asp-for="BranchId" class="form-control" asp-items="ViewBag.Branches"></select>
+                    <span asp-validation-for="BranchId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<p>
+    <a asp-action="Index">Volver a la lista</a>
+</p>
