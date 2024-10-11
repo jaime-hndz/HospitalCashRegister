@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Transaction>
+
+@{
+    ViewData["Title"] = "Transacciones";
+}
+
+@if (@ViewBag.CashRegisterId != null)
+{
+    <h2>Transacciones (@ViewBag.CashRegisterId)</h2>
+    <p>
+            <a asp-action="Create">Nueva transacción</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cajero</th>
+                <th>Paciente</th>
+                <th>Servicio</th>
+                <th>Monto</th>
+                <th>Tipo</th>
+                <th>Estatus</th>
+                <th>Fecha</th>
+                <th>Comentario</th>
+
+
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Cashier?.Username</td>
+                    <td>@item.Patient?.Name</td>
+                    <td>@item.MedicalService?.Name</td>
+                    <td>@item.Amount</td>
+                    <td>@item.TransactionTypeId</td>
+                    <td>@item.TransactionStatusId</td>
+                    <td>@item.Date</td>
+                    <td>@item.Comment</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

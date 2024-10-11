@@ -43,6 +43,11 @@ CREATE TABLE MedicalService (
     Status BIT DEFAULT 1
 );
 
+INSERT INTO MedicalService(_id, Name, Description, Price)
+VALUES('9acb974c-a87c-4767-b6e5-c7730f44eaf1', "Consulta med. pediatra", "Consulta con el médico pediatra", 1000);
+INSERT INTO MedicalService(_id, Name, Description, Price)
+VALUES('e6559945-b7b3-4d31-9b96-bc0c4a335459', "Consulta med. familiar", "Consulta con el médico familiar", 1500);
+
 CREATE TABLE TransactionType (
     _id INT PRIMARY KEY,
     Value VARCHAR(50) NOT NULL
@@ -53,21 +58,18 @@ CREATE TABLE TransactionStatus (
     Value VARCHAR(50) NOT NULL
 );
 
-
+drop table "Transaction"
 CREATE TABLE "Transaction" (
     _id VARCHAR(50) PRIMARY KEY,
     CashierId VARCHAR(50),
     PatientId VARCHAR(50),
-    ServiceId VARCHAR(50),
+    MedicalServiceId VARCHAR(50),
 	CashRegisterId VARCHAR(50),
     TransactionTypeId INT NOT NULL,
     TransactionStatusId INT NOT NULL,
     Amount DECIMAL(10, 2) NOT NULL,
     Date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CashierId) REFERENCES Cashier(_id),
-    FOREIGN KEY (PatientId) REFERENCES Patient(_id),
-    FOREIGN KEY (ServiceId) REFERENCES MedicalService(_id),
-    FOREIGN KEY (TransactionTypeId) REFERENCES TransactionType(_id)
+	Comment VARCHAR(255)
 );
 
 
@@ -75,6 +77,8 @@ CREATE TABLE CashRegisterStatus (
     _id INT PRIMARY KEY,
     Value VARCHAR(50) NOT NULL
 );
+
+DROP table CashRegister
 
 CREATE TABLE CashRegister (
     _id VARCHAR(50) PRIMARY KEY,
@@ -86,10 +90,7 @@ CREATE TABLE CashRegister (
     CashInflow DECIMAL(10, 2) DEFAULT 0.00,
     CashOutflow DECIMAL(10, 2) DEFAULT 0.00,
     FinalAmount DECIMAL(10, 2) DEFAULT 0.00,
-    CashRegisterStatusId INT,
-    FOREIGN KEY (CashierId) REFERENCES Cashier(_id),
-	FOREIGN KEY (BranchId) REFERENCES Branch(_id),
-    FOREIGN KEY (CashRegisterStatusId) REFERENCES CashRegisterStatus(_id)
+    CashRegisterStatusId INT
 );
 
 CREATE TABLE Receipt (

@@ -6,38 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCashRegister.Controllers
 {
-    public class CashRegistersController : Controller
+    public class PatientsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CashRegistersController(ApplicationDbContext context)
+        public PatientsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            var branchId = User.FindFirst("BranchId")?.Value;
-
-            if (branchId != null)
-            {
-                ViewBag.BranchName = User.FindFirst("BranchId")?.Value;
-                return View(
-                    await _context.CashRegisters
-                        .Where(cr => cr.BranchId == branchId)
-                        .OrderByDescending(x => x.OpeningDate)
-                        .ToListAsync()
-                );
-
-            }
-            else
-            {
-                return View(
-                    await _context.CashRegisters
-                        .OrderByDescending(x => x.OpeningDate)
-                        .ToListAsync()
-                );
-            }
+            return View(
+                await _context.Patients
+                    .Where(x => x.Status == true)
+                    .ToListAsync()
+            );
         }
 
         public async Task<IActionResult> Details(string id)
@@ -47,7 +31,7 @@ namespace HospitalCashRegister.Controllers
                 return NotFound();
             }
 
-            var obj = await _context.CashRegisters
+            var obj = await _context.Patients
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (obj == null)
             {
@@ -57,29 +41,19 @@ namespace HospitalCashRegister.Controllers
             return View(obj);
         }
 
-        public IActionResult Start()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Start(CashRegister obj)
+        public async Task<IActionResult> Create(Patient obj)
         {
-            var branchId = User.FindFirst("BranchId")?.Value;
-            var cashierId = User.FindFirst("UserId")?.Value;
-
-            if (branchId == null || cashierId == null)
-                throw new Exception();
-
             if (ModelState.IsValid)
             {
-                var id = Guid.NewGuid().ToString();
-                obj.Id = id;
-                obj.BranchId = branchId;
-                obj.CashierId = cashierId;
+                obj.Id = Guid.NewGuid().ToString();
 
-                HttpContext.Session.SetString("CurrentCashRegisterId", id);
                 _context.Add(obj);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -94,18 +68,19 @@ namespace HospitalCashRegister.Controllers
                 return NotFound();
             }
 
-            var obj = await _context.CashRegisters.FindAsync(id);
+            var obj = await _context.Patients.FindAsync(id);
             if (obj == null)
             {
                 return NotFound();
             }
-
+            var branches = _context.Patients.ToList();
+            ViewBag.Branches = new SelectList(branches, "Id", "Name");
             return View(obj);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Cashier obj)
+        public async Task<IActionResult> Edit(string id, Patient obj)
         {
             if (id != obj.Id)
             {
@@ -136,11 +111,15 @@ namespace HospitalCashRegister.Controllers
             return View(obj);
         }
 
-        public async Task<IActionResult> End()
+        public async Task<IActionResult> Delete(string id)
         {
-            var obj = await _context.CashRegisters
-                .OrderByDescending(x => x.OpeningDate)
-                .FirstOrDefaultAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = await _context.Patients
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (obj == null)
             {
                 return NotFound();
@@ -149,26 +128,21 @@ namespace HospitalCashRegister.Controllers
             return View(obj);
         }
 
-        [HttpPost, ActionName("End")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EndConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var obj = await _context.CashRegisters.FindAsync(id);
+            var obj = await _context.Patients.FindAsync(id);
             if (obj == null) throw new Exception("Este registro no existe");
-            obj.CashRegisterStatusId = 1;
-            obj.ClosingDate = DateTime.Now;
-            obj.FinalAmount = obj.InitialAmount + obj.CashInflow - obj.CashOutflow;
-            _context.CashRegisters.Update(obj);
+            obj.Status = false;
+            _context.Patients.Update(obj);
             await _context.SaveChangesAsync();
-            HttpContext.Session.Remove("CurrentCashRegisterId");
             return RedirectToAction(nameof(Index));
         }
 
         private bool EntityExists(string id)
         {
-            return _context.CashRegisters.Any(e => e.Id == id);
+            return _context.Cashiers.Any(e => e.Id == id);
         }
-
-
     }
 }

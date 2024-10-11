@@ -70,6 +70,7 @@ namespace HospitalCashRegister.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, cashier.Username),
+                new Claim("UserId", cashier.Id),
                 new Claim(ClaimTypes.Role, "User"),
                 new Claim("FullName", cashier.FullName),
                 new Claim("Admin", cashier.Admin.ToString()),
