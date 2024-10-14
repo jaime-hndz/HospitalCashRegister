@@ -3,6 +3,7 @@ using HospitalCashRegister.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 namespace HospitalCashRegister.Controllers
 {
@@ -13,6 +14,37 @@ namespace HospitalCashRegister.Controllers
         public CashRegistersController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<IActionResult> PrintCashRegister(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = await _context.CashRegisters
+                .Include(x => x.Cashier)
+                .Include(x => x.Branch)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            var transactions = await _context.Transactions
+                .Where(x => x.CashRegisterId == obj.Id)
+                .Include(x => x.MedicalService)
+                .Include(x => x.Patient)
+                .ToListAsync();
+
+            obj.transactions = transactions;
+            return new ViewAsPdf("PrintCashRegister", obj)
+            {
+                FileName = $"PrintCashRegister {id}.pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
         }
 
         public async Task<IActionResult> Index()
@@ -161,7 +193,14 @@ namespace HospitalCashRegister.Controllers
             _context.CashRegisters.Update(obj);
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("CurrentCashRegisterId");
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction("EndToPrint", new { Id = id });
+        }
+
+        public IActionResult EndToPrint(string id)
+        {
+            ViewBag.Id = id;
+            return View();
         }
 
         private bool EntityExists(string id)

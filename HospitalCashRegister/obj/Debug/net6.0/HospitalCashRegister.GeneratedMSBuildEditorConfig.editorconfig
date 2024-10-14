@@ -10,6 +10,8 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = HospitalCashRegister
 build_property.RootNamespace = HospitalCashRegister
 build_property.ProjectDir = C:\Users\Jojo\Documents\TRABAJO FINAL IDS3\HospitalCashRegister\HospitalCashRegister\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
@@ -76,8 +78,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xFbmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/EndToPrint.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xFbmRUb1ByaW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/PrintCashRegister.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xQcmludENhc2hSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/CashRegisters/Start.cshtml]
@@ -138,6 +148,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Transactions/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Transactions/PrintTransaction.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXFByaW50VHJhbnNhY3Rpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/_ViewImports.cshtml]

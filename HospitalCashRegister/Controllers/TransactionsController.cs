@@ -3,6 +3,7 @@ using HospitalCashRegister.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 namespace HospitalCashRegister.Controllers
 {
@@ -64,6 +65,31 @@ namespace HospitalCashRegister.Controllers
             return View(obj);
         }
 
+        public async Task<IActionResult> PrintTransaction(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = await _context.Transactions
+                .Include(x => x.Cashier)
+                .Include(x => x.MedicalService)
+                .Include(x => x.Patient)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return new ViewAsPdf("PrintTransaction", obj)
+            {
+                FileName = $"Transccion {id}.pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
+        }
+
         public IActionResult Create()
         {
 
@@ -82,8 +108,9 @@ namespace HospitalCashRegister.Controllers
         {
             var userId = User.FindFirst("UserId")?.Value;
             var cashregisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
+            var service = _context.MedicalServices.FirstOrDefault(x => x.Id == obj.MedicalServiceId);
 
-            if (userId == null || cashregisterId == null)
+            if (userId == null || cashregisterId == null || service == null)
                 throw new Exception();
 
             if (ModelState.IsValid)
@@ -91,6 +118,7 @@ namespace HospitalCashRegister.Controllers
                 obj.Id = Guid.NewGuid().ToString();
                 obj.CashierId = userId;
                 obj.CashRegisterId = cashregisterId;
+                obj.Amount = service.Price;
 
                 _context.Add(obj);
 

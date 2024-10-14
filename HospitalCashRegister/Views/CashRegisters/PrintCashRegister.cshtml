@@ -1,0 +1,110 @@
+﻿@model CashRegister
+
+@{
+    ViewData["Title"] = "Cuadre final";
+    Layout = null;
+}
+
+<div class="report-container">
+    <div class="header">
+        <h1>Reporte de Cierre de Caja</h1>
+        <p>ID de Caja: @Model.Id</p>
+        <p>Cajero: @Model.Cashier.FullName</p>
+        <p>Sucursal: @Model.Branch.Name</p>
+        <p>Fecha de Apertura: @Model.OpeningDate.ToString("g")</p>
+        <p>Fecha de Cierre: @(Model.ClosingDate?.ToString("g") ?? "Aún Abierta")</p>
+    </div>
+
+    <div class="details">
+        <h2>Resumen</h2>
+        <table>
+            <tr>
+                <th>Monto Inicial</th>
+                <td>@Model.InitialAmount.ToString("C")</td>
+            </tr>
+            <tr>
+                <th>Ingresos</th>
+                <td>@Model.CashInflow.ToString("C")</td>
+            </tr>
+            <tr>
+                <th>Egresos</th>
+                <td>@Model.CashOutflow.ToString("C")</td>
+            </tr>
+            <tr>
+                <th>Monto Final</th>
+                <td>@Model.FinalAmount.ToString("C")</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>@Model.CashRegisterStatusId</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="transactions">
+        <h2>Transacciones</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Transacción</th>
+                    <th>Servicio</th>
+                    <th>Paciente</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model.transactions)
+                {
+                    <tr>
+                        <td>@transaction.Id</td>
+                        <td>@transaction.MedicalService.Name</td>
+                        <td>@transaction.Patient.Name</td>
+                        <td>@transaction.Amount.ToString("C")</td>
+                        <td>@transaction.Date.ToString("g")</td>
+                        <td>@transaction.TransactionTypeId</td>
+                        <td>@transaction.TransactionStatusId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>¡Gracias por utilizar el sistema de caja registradora!</p>
+    </div>
+</div>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .report-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+    }
+
+    .header, .footer {
+        text-align: center;
+    }
+
+    .details, .transactions {
+        margin-top: 20px;
+    }
+
+        .details table, .transactions table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .details table th, .transactions table th,
+            .details table td, .transactions table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+</style>

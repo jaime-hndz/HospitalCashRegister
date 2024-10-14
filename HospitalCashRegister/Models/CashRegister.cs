@@ -14,6 +14,8 @@ namespace HospitalCashRegister.Models
         public int CashRegisterStatusId { get; set; } = 0;
         public Cashier? Cashier { get; set; } = default!;
         public Branch? Branch { get; set; } = default!;
+
+        public List<Transaction> transactions { get; set; } = new List<Transaction>();
     }
 
     public enum CashRegisterStatus

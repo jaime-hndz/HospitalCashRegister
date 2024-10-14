@@ -19,6 +19,7 @@ namespace HospitalCashRegister.Data.Configuration
             builder.Property(x => x.CashOutflow).HasColumnName("CashOutflow");
             builder.Property(x => x.FinalAmount).HasColumnName("FinalAmount");
             builder.Property(x => x.CashRegisterStatusId).HasColumnName("CashRegisterStatusId");
+            builder.Ignore(x => x.transactions);
             builder.HasOne<Models.Cashier>(x => x.Cashier).WithMany().HasForeignKey(t => t.CashierId);
             builder.HasOne<Models.Branch>(x => x.Branch).WithMany().HasForeignKey(t => t.BranchId);
 

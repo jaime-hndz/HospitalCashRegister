@@ -1,0 +1,88 @@
+﻿@model Transaction
+
+@{
+    ViewData["Title"] = "Detalles Cajero";
+    Layout = null;
+}
+
+<div class="invoice-container">
+    <div class="invoice-header">
+        <h1>Factura</h1>
+        <p>ID Transacción: @Model.Id</p>
+        <p>Fecha: @Model.Date.ToShortDateString()</p>
+    </div>
+
+    <div class="invoice-details">
+        <h2>Detalles paciente</h2>
+        <p>Nombre: @Model.Patient.Name</p>
+
+        <h2>Detalles cajero</h2>
+        <p>Nombre cajero: @Model.Cashier.FullName</p>
+
+        <h2>Detalles servicio/s</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.MedicalService.Name</td>
+                    <td>@Model.MedicalService.Price.ToString("C")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Resumen transacción</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Amount.ToString("C")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="invoice-footer">
+        <p>Gracias por pagar!</p>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+    }
+
+    .invoice-header, .invoice-footer {
+        text-align: center;
+    }
+
+    .invoice-details {
+        margin-top: 20px;
+    }
+
+        .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .invoice-details table th, .invoice-details table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+</style>

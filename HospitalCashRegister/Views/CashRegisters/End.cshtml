@@ -12,6 +12,8 @@
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Finalizar" class="btn btn-danger" /> |
         <a asp-action="Index">Cancelar</a>
-        <a asp-action="Index">Imprimir</a>
+        @*
+        <a asp-action="PrintCashRegister" asp-route-id="@Model.Id">Imprimir</a>
+        *@
     </form>
 </div>
