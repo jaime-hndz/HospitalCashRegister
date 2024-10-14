@@ -101,6 +101,7 @@ namespace HospitalCashRegister.Controllers
 
             var services = _context.MedicalServices.ToList();
             ViewBag.MedicalServices = new SelectList(services, "Id", "Name");
+            ViewBag.ServicePrices = services.Select(x => new {x.Id, x.Price }).ToList();
 
             return View();
         }

@@ -11,6 +11,7 @@ namespace HospitalCashRegister.Models
         public TransactionType TransactionTypeId { get; set; } = 0;
         public TransctionStatus TransactionStatusId { get; set; } = 0;
         public decimal Amount { get; set; }
+        public string? CashDetails {  get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
         public string? Comment { get; set; }
         public Cashier? Cashier { get; set; } = default!;

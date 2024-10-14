@@ -20,6 +20,7 @@ namespace HospitalCashRegister.Data.Configuration
             builder.Property(x => x.Amount).HasColumnName("Amount");
             builder.Property(x => x.Date).HasColumnName("Date");
             builder.Property(x => x.Comment).HasColumnName("Comment");
+            builder.Property(x => x.CashDetails).HasColumnName("CashDetails");
             builder.Ignore(x => x.ServiceIds);
 
             builder.HasMany(x => x.ServiceOrders).WithOne().HasForeignKey(x => x.TransactionId);

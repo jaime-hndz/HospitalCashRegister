@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Nueva transacción";
+    string[] denominaciones = { "1", "5", "10", "25", "50" };
 }
 
 <h2>Nueva transacción</h2>
@@ -10,7 +11,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <label>Total a pagar: RD$ <span id="totalPayment">0</span></label>
+        <form asp-action="Create" id="transactionForm">
             <div class="form-group">
                 <label asp-for="PatientId" class="control-label">Paciente</label>
                 <select asp-for="PatientId" class="form-control" asp-items="ViewBag.Patients"></select>
@@ -29,9 +31,42 @@
                 <label asp-for="Comment" class="control-label">Comentario</label>
                 <input asp-for="Comment" class="form-control" />
                 <span asp-validation-for="Comment" class="text-danger"></span>
+
+                <!-- Checkbox para Cash -->
+                <div>
+                    <input type="checkbox" id="cashCheckbox" /> ¿Pago en efectivo?
+                </div>
+
+                <!-- Tabla de detalles de efectivo -->
+                <div id="cashField" style="display:none;">
+                    <h4>Detalles de efectivo</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Moneda</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in denominaciones)
+                            {
+                                <tr>
+                                    <td>RD$ @item</td>
+                                    <td><input type="number" class="form-control cash-amount" data-denomination="@item" value="0" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <!-- Mostrar el total -->
+                    <label>Total efectivo: RD$ <span id="totalCash">0</span></label>
+
+                    <!-- Campo oculto para guardar el JSON resultante -->
+                    <input type="hidden" asp-for="CashDetails" id="CashDetails" />
+                </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" id="submitButton" />
             </div>
         </form>
     </div>
@@ -52,19 +87,104 @@
                 placeholder: "Seleccione servicios médicos",
                 allowClear: true
             });
-        });
 
-        function toggleBranchField() {
-            var isAdmin = document.getElementById("adminCheckbox").checked;
-            var branchField = document.getElementById("branchField");
-            if (isAdmin) {
-                branchField.style.display = "none";
-            } else {
-                branchField.style.display = "block";
+            let totalToPay = 0;
+            let totalCash = 0;
+
+            var servicePrices = @Html.Raw(Json.Serialize(ViewBag.ServicePrices));
+
+            function calculateTotalPayment() {
+                var total = 0;
+                $('#ServiceIds option:selected').each(function () {
+                    var serviceId = this.value; // Obtiene el ID del servicio seleccionado
+
+                    console.log(serviceId)
+                    console.log(servicePrices)
+
+                    var matchingService = servicePrices.find(a => a.id === serviceId);
+                    console.log(matchingService)
+
+                    if (matchingService) {
+                        var price = matchingService.price; // Obtiene el precio
+                        total += parseFloat(price); // Suma el precio al total
+                    }
+                });
+
+                totalToPay = total;
+                $('#totalPayment').text(total.toFixed(2)); // Actualiza el label con el total
+                toggleSubmitButton();
             }
-        }
 
-        document.getElementById("adminCheckbox").addEventListener("change", toggleBranchField);
-        document.addEventListener("DOMContentLoaded", toggleBranchField);
+            // Actualiza el total cada vez que cambien las selecciones en la lista de servicios médicos
+            $('.select2').on('change', calculateTotalPayment);
+
+            // Función para mostrar u ocultar el div basado en el checkbox
+            function toggleCashField() {
+                var isChecked = document.getElementById("cashCheckbox").checked;
+                var cashField = document.getElementById("cashField");
+                if (isChecked) {
+                    cashField.style.display = "block";
+                } else {
+                    cashField.style.display = "none";
+                }
+                toggleSubmitButton();
+            }
+
+            // Función para calcular la suma total del efectivo ingresado
+            function calculateTotalCash() {
+                var total = 0;
+                $('.cash-amount').each(function () {
+                    var denomination = $(this).data('denomination');
+                    var amount = $(this).val();
+                    total += denomination * amount;
+                });
+                totalCash = total;
+                $('#totalCash').text(total); // Actualiza el label con el total
+                toggleSubmitButton();
+            }
+
+            // Función para convertir los valores de la tabla en JSON
+            function generateCashDetailsJson() {
+                var cashDetails = {};
+                $('.cash-amount').each(function () {
+                    var denomination = $(this).data('denomination');
+                    var amount = $(this).val();
+                    cashDetails[denomination] = amount;
+                });
+                var isChecked = document.getElementById("cashCheckbox").checked;
+
+                if (isChecked){
+                    $('#CashDetails').val(JSON.stringify(cashDetails));
+                }
+            }
+
+            function toggleSubmitButton() {
+                var isChecked = document.getElementById("cashCheckbox").checked;
+                var submitButton = document.getElementById("submitButton");
+
+
+                console.log(isChecked)
+                console.log(totalCash)
+                console.log(totalToPay)
+
+
+                if (isChecked && totalCash !== totalToPay) {
+                    submitButton.disabled = true; // Deshabilita si no coincide el total de efectivo
+                } else {
+                    submitButton.disabled = false; // Habilita en caso contrario
+                }
+            }
+
+            // Asocia el evento change al checkbox
+            document.getElementById("cashCheckbox").addEventListener("change", toggleCashField);
+
+            // Calcula el total cada vez que se cambie un valor en los inputs
+            $('.cash-amount').on('input', calculateTotalCash);
+
+            // Generar el JSON cuando se envíe el formulario
+            document.getElementById("transactionForm").addEventListener("submit", function (event) {
+                generateCashDetailsJson();
+            });
+        });
     </script>
 }
