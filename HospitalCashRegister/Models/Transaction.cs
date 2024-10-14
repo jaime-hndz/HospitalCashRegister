@@ -5,7 +5,8 @@ namespace HospitalCashRegister.Models
         public string Id { get; set; } = string.Empty;
         public string CashierId { get; set; } = string.Empty;
         public string PatientId { get; set; } = string.Empty;
-        public string MedicalServiceId { get; set; } = string.Empty;
+        /*public string MedicalServiceId { get; set; } = string.Empty;*/
+        public List<string> ServiceIds { get; set; } = new List<string>();
         public string CashRegisterId { get; set; } = string.Empty;
         public TransactionType TransactionTypeId { get; set; } = 0;
         public TransctionStatus TransactionStatusId { get; set; } = 0;
@@ -16,6 +17,7 @@ namespace HospitalCashRegister.Models
         public Patient? Patient { get; set; } = default!;
         public MedicalService? MedicalService { get; set; } = default!;
         public CashRegister? CashRegister { get; set; } = default!;
+        public IEnumerable<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 
     }
 

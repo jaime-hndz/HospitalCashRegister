@@ -12,24 +12,20 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div class="form-group">
-                    <label asp-for="PatientId" class="control-label">Paciente</label>
-                    <select asp-for="PatientId" class="form-control" asp-items="ViewBag.Patients"></select>
-                    <span asp-validation-for="PatientId" class="text-danger"></span>
+                <label asp-for="PatientId" class="control-label">Paciente</label>
+                <select asp-for="PatientId" class="form-control" asp-items="ViewBag.Patients"></select>
+                <span asp-validation-for="PatientId" class="text-danger"></span>
 
-                <label asp-for="MedicalServiceId" class="control-label">Servicio médico</label>
-                <select asp-for="MedicalServiceId" class="form-control" asp-items="ViewBag.MedicalServices"></select>
-                <span asp-validation-for="MedicalServiceId" class="text-danger"></span>
+                <label asp-for="ServiceIds" class="control-label">Servicios médicos</label>
+                @Html.ListBoxFor(m => m.ServiceIds, (SelectList)ViewBag.MedicalServices, new { @class = "form-control select2" })
+
                 <br />
                 <label asp-for="TransactionTypeId" class="control-label">Tipo</label>
                 <input checked type="radio" value="0" asp-for="TransactionTypeId" name="TransactionTypeId" /> Entrada
                 <input type="radio" value="1" asp-for="TransactionTypeId" name="TransactionTypeId" /> Salida
                 <span asp-validation-for="TransactionTypeId" class="text-danger"></span>
-                
-                <br />
-@*                 <label asp-for="Amount" class="control-label">Monto</label>
-                <input type="number" asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span> *@
 
+                <br />
                 <label asp-for="Comment" class="control-label">Comentario</label>
                 <input asp-for="Comment" class="form-control" />
                 <span asp-validation-for="Comment" class="text-danger"></span>
@@ -46,7 +42,18 @@
 </p>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
     <script>
+        $(document).ready(function () {
+            // Aplica Select2 a los ListBox con la clase select2
+            $('.select2').select2({
+                placeholder: "Seleccione servicios médicos",
+                allowClear: true
+            });
+        });
+
         function toggleBranchField() {
             var isAdmin = document.getElementById("adminCheckbox").checked;
             var branchField = document.getElementById("branchField");

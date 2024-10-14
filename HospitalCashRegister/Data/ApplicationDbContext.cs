@@ -16,6 +16,7 @@ namespace HospitalCashRegister.Data
             Transactions = Set<Transaction>();
             CashRegisters = Set<CashRegister>();
             Receipts = Set<Receipt>();
+            ServiceOrders = Set<ServiceOrder>();
         }
 
         public DbSet<Branch> Branches { get; set; }
@@ -25,6 +26,7 @@ namespace HospitalCashRegister.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<CashRegister> CashRegisters { get; set; }
         public DbSet<Receipt> Receipts { get; set; }
+        public DbSet<ServiceOrder> ServiceOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

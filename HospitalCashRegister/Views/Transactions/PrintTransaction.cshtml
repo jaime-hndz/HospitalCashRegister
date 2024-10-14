@@ -1,7 +1,7 @@
 ﻿@model Transaction
 
 @{
-    ViewData["Title"] = "Detalles Cajero";
+    ViewData["Title"] = "Factura";
     Layout = null;
 }
 
@@ -9,7 +9,7 @@
     <div class="invoice-header">
         <h1>Factura</h1>
         <p>ID Transacción: @Model.Id</p>
-        <p>Fecha: @Model.Date.ToShortDateString()</p>
+        <p>Fecha: @Model.Date.ToString()</p>
     </div>
 
     <div class="invoice-details">
@@ -28,10 +28,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>@Model.MedicalService.Name</td>
-                    <td>@Model.MedicalService.Price.ToString("C")</td>
-                </tr>
+                @foreach (var order in Model.ServiceOrders)
+                {
+                    <tr>
+                        <td>@order.MedicalService.Name</td>
+                        <td>@order.MedicalService.Price</td>
+                    </tr>
+                }
             </tbody>
         </table>
 

@@ -31,6 +31,8 @@ namespace HospitalCashRegister.Controllers
                         .Include(x => x.Cashier)
                         .Include(x => x.Patient)
                         .Include(x => x.MedicalService)
+                        .Include(x => x.ServiceOrders)
+                        .OrderByDescending(x => x.Date)
                         .ToListAsync()
                         );
                 }
@@ -74,8 +76,9 @@ namespace HospitalCashRegister.Controllers
 
             var obj = await _context.Transactions
                 .Include(x => x.Cashier)
-                .Include(x => x.MedicalService)
                 .Include(x => x.Patient)
+                .Include(x => x.ServiceOrders)
+                    .ThenInclude(s => s.MedicalService)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (obj == null)
             {
@@ -108,9 +111,15 @@ namespace HospitalCashRegister.Controllers
         {
             var userId = User.FindFirst("UserId")?.Value;
             var cashregisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
-            var service = _context.MedicalServices.FirstOrDefault(x => x.Id == obj.MedicalServiceId);
+            var services = new List<MedicalService>();
 
-            if (userId == null || cashregisterId == null || service == null)
+
+            foreach (var serviceId in obj.ServiceIds)
+            {
+               services.Add(_context.MedicalServices.FirstOrDefault(x => x.Id == serviceId));
+            }
+
+            if (userId == null || cashregisterId == null)
                 throw new Exception();
 
             if (ModelState.IsValid)
@@ -118,9 +127,16 @@ namespace HospitalCashRegister.Controllers
                 obj.Id = Guid.NewGuid().ToString();
                 obj.CashierId = userId;
                 obj.CashRegisterId = cashregisterId;
-                obj.Amount = service.Price;
+                obj.Amount = services.Sum(s => s.Price);
 
                 _context.Add(obj);
+
+                _context.ServiceOrders.AddRange(services.Select(s => new ServiceOrder
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ServiceId = s.Id,
+                    TransactionId = obj.Id
+                }));
 
                 var currentCashRegister = _context.CashRegisters.FirstOrDefault(x => x.Id == cashregisterId);
                 
