@@ -56,6 +56,10 @@ namespace HospitalCashRegister.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (obj.Admin == true)
+                {
+                    obj.BranchId = null;
+                }
                 obj.Id = Guid.NewGuid().ToString();
                 obj.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(obj.Password,11,BCrypt.Net.HashType.SHA256);
 

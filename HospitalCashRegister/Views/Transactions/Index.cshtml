@@ -4,9 +4,9 @@
     ViewData["Title"] = "Transacciones";
 }
 
-@if (@ViewBag.CashRegisterId != null)
+@if (@ViewBag.CashRegisterId != null || User.IsInRole("Admin"))
 {
-    <h2>Transacciones (@ViewBag.CashRegisterId)</h2>
+    <h2>Transacciones</h2>
     <p>
             <a asp-action="Create">Nueva transacción</a>
     </p>

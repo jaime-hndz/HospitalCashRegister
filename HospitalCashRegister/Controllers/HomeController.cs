@@ -26,15 +26,25 @@ namespace HospitalCashRegister.Controllers
             ViewBag.BranchName = User.FindFirst("BranchName")?.Value ?? HttpContext.Session.GetString("SessionBranchName");
             ViewBag.CashRegisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
             return View();
+
         }
 
         private void CheckCashRegister()
         {
-            var lastCashRegister = _context.CashRegisters.OrderByDescending(x => x.OpeningDate).FirstOrDefault();
-            if (lastCashRegister.CashRegisterStatusId == 0)
+            var branchId = User.FindFirst("BranchId")?.Value;
+
+            if (!string.IsNullOrWhiteSpace(branchId))
             {
-               HttpContext.Session.SetString("CurrentCashRegisterId", lastCashRegister.Id);
+                var lastCashRegister = _context.CashRegisters
+                                            .Where(x => x.BranchId == branchId)
+                                            .OrderByDescending(x => x.OpeningDate)
+                                            .FirstOrDefault();
+                if (lastCashRegister != null && lastCashRegister.CashRegisterStatusId == 0 )
+                {
+                   HttpContext.Session.SetString("CurrentCashRegisterId", lastCashRegister.Id);
+                }
             }
+
 
         }
 

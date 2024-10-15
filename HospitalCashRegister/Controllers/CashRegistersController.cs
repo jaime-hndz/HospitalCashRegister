@@ -51,9 +51,10 @@ namespace HospitalCashRegister.Controllers
         {
             var branchId = User.FindFirst("BranchId")?.Value;
 
-            if (branchId != null)
+            if (!string.IsNullOrEmpty(branchId))
             {
-                ViewBag.BranchName = User.FindFirst("BranchId")?.Value;
+                ViewBag.CashRegisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
+                ViewBag.BranchId = branchId;
                 return View(
                     await _context.CashRegisters
                         .Where(cr => cr.BranchId == branchId)
@@ -70,6 +71,18 @@ namespace HospitalCashRegister.Controllers
                         .ToListAsync()
                 );
             }
+        }
+
+        public async Task<IActionResult> GetByBranchId(string branchId)
+        {
+
+                return View(
+                    await _context.CashRegisters
+                        .Where(x => x.BranchId == branchId)
+                        .OrderByDescending(x => x.OpeningDate)
+                        .ToListAsync()
+                );
+            
         }
 
         public async Task<IActionResult> Details(string id)
@@ -170,7 +183,14 @@ namespace HospitalCashRegister.Controllers
 
         public async Task<IActionResult> End()
         {
+            var branchId = User.FindFirst("BranchId")?.Value;
+
+            if (branchId == null)
+            {
+                return NotFound();
+            }
             var obj = await _context.CashRegisters
+                .Where(x => x.BranchId == branchId)
                 .OrderByDescending(x => x.OpeningDate)
                 .FirstOrDefaultAsync();
             if (obj == null)

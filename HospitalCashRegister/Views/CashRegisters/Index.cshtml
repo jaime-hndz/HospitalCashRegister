@@ -6,10 +6,20 @@
 
 <h2>Histórico días</h2>
 
-<p>
-    <a asp-action="Start">Iniciar día</a>
-    <a asp-action="End">Terminar día</a>
-</p>
+@if (ViewBag.BranchId != null)
+{
+    <p>
+        @if (ViewBag.CashRegisterId == null)
+        {
+            <a asp-action="Start">Iniciar día</a>
+        }
+        else
+        {
+            <a asp-action="End">Terminar día</a>
+        }
+    </p>
+}
+
 
 <table class="table">
     <thead>

@@ -71,9 +71,8 @@ namespace HospitalCashRegister.Controllers
             {
                 new Claim(ClaimTypes.Name, cashier.Username),
                 new Claim("UserId", cashier.Id),
-                new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.Role,  cashier.Admin ? "Admin":"User"),
                 new Claim("FullName", cashier.FullName),
-                new Claim("Admin", cashier.Admin.ToString()),
                 new Claim("BranchId", cashier.BranchId != null ? cashier.BranchId : ""),
                 new Claim("BranchName", cashier.Branch != null ? cashier.Branch.Name : "")
 

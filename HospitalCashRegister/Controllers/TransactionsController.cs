@@ -38,7 +38,23 @@ namespace HospitalCashRegister.Controllers
                 }
                 else
                 {
-                    return View();
+                    if (User.IsInRole("Admin"))
+                    {
+                        return View(
+                        await _context.Transactions
+                            .Include(x => x.Cashier)
+                            .Include(x => x.Patient)
+                            .Include(x => x.MedicalService)
+                            .Include(x => x.ServiceOrders)
+                            .OrderByDescending(x => x.Date)
+                            .ToListAsync()
+                        );
+                    }
+                    else
+                    {
+                        return View();
+
+                    }
                 }
 
             }
