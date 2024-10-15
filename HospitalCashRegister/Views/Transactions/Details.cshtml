@@ -1,29 +1,111 @@
-﻿@model Cashier
+﻿@model Transaction
 
 @{
-    ViewData["Title"] = "Detalles Cajero";
+    ViewData["Title"] = "Detalles Transacción";
 }
 
-<h2>Detalles Cajero</h2>
 
 <div>
-    <h4>Cajero</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Usuario</dt>
-        <dd class="col-sm-10">@Model.Username</dd>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h1>Detalles Transacción</h1>
+            <p>ID Transacción: @Model.Id</p>
+            <p>Fecha: @Model.Date.ToString()</p>
+        </div>
 
-        <dt class="col-sm-2">Nombre completo</dt>
-        <dd class="col-sm-10">@Model.FullName</dd>
+        <div class="invoice-details">
+            @if (Model.Patient != null)
+            {
+                <h2>Detalles paciente</h2>
+                <p>Nombre: @Model.Patient.Name</p>
+            }
 
-        <dt class="col-sm-2">Administrador</dt>
-        <dd class="col-sm-10">@Model.Admin</dd>
+            <h2>Detalles cajero</h2>
+            <p>Nombre cajero: @Model.Cashier.FullName</p>
 
-        <dt class="col-sm-2">Sucursal</dt>
-        <dd class="col-sm-10">@Model.Branch?.Name</dd>
-    </dl>
+
+            @if (Model.ServiceOrders != null && Model.ServiceOrders.Count() > 0)
+            {
+                <h2>Detalles servicio/s</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Servicio</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.ServiceOrders)
+                        {
+                            <tr>
+                                <td>@order.MedicalService.Name</td>
+                                <td>@order.MedicalService.Price</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <h2>Resumen transacción</h2>
+            <table>
+
+                <tbody>
+                    <tr>
+                        <th>Monto</th>
+                        <td>@Model.Amount.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <th>Comentario</th>
+                        <td>@Model.Comment</td>
+                    </tr>
+                    @if (ViewBag.CashDetails != null)
+                    {
+                        <tr>
+                            <th>Detalles efectivo</th>
+                            <td>
+                                @Html.Partial("CashDetailsTable", (Dictionary<string, string>)ViewBag.CashDetails)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </div>
 <p>
     <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
     <a asp-action="Index">Volver a la lista</a>
 </p>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+    }
+
+    .invoice-header, .invoice-footer {
+        text-align: center;
+    }
+
+    .invoice-details {
+        margin-top: 20px;
+    }
+
+        .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .invoice-details table th, .invoice-details table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+</style>

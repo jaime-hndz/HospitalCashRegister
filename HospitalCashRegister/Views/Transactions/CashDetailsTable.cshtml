@@ -1,0 +1,22 @@
+﻿@model Dictionary<string, string>
+
+<table border="1">
+    <thead>
+        <tr>
+            <!-- Crear las columnas con los valores de las llaves -->
+            @foreach (var key in Model.Keys) // Solo las primeras 4 llaves
+            {
+                <th>@key</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <!-- Crear la fila con los valores correspondientes -->
+            @foreach (var value in Model.Values) // Solo los primeros 4 valores
+            {
+                <td>@value</td>
+            }
+        </tr>
+    </tbody>
+</table>

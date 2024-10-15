@@ -3,6 +3,7 @@ using HospitalCashRegister.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Rotativa.AspNetCore;
 
 namespace HospitalCashRegister.Controllers
@@ -29,9 +30,6 @@ namespace HospitalCashRegister.Controllers
                     await _context.Transactions
                         .Where(t => t.CashRegisterId == CashRegisterId)
                         .Include(x => x.Cashier)
-                        .Include(x => x.Patient)
-                        .Include(x => x.MedicalService)
-                        .Include(x => x.ServiceOrders)
                         .OrderByDescending(x => x.Date)
                         .ToListAsync()
                         );
@@ -43,8 +41,6 @@ namespace HospitalCashRegister.Controllers
                         return View(
                         await _context.Transactions
                             .Include(x => x.Cashier)
-                            .Include(x => x.Patient)
-                            .Include(x => x.MedicalService)
                             .Include(x => x.ServiceOrders)
                             .OrderByDescending(x => x.Date)
                             .ToListAsync()
@@ -73,17 +69,61 @@ namespace HospitalCashRegister.Controllers
                 return NotFound();
             }
 
+            Transaction? obj;
+            bool isPayment = ( _context.Transactions.FirstOrDefault(x => x.Id == id).TransactionTypeId  == TransactionType.ServicePayment);
+
+            if (isPayment)
+            {
+                obj = await _context.Transactions
+                 .Include(x => x.Cashier)
+                 .Include(x => x.Patient)
+                 .Include(x => x.ServiceOrders)
+                     .ThenInclude(s => s.MedicalService)
+                 .FirstOrDefaultAsync(m => m.Id == id);
+            }
+            else
+            {
+               obj = await _context.Transactions
+                 .Include(x => x.Cashier)
+                 .FirstOrDefaultAsync(m => m.Id == id);
+            }
+            
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            if (obj.CashDetails != null)
+            {
+                 ViewBag.CashDetails = JsonConvert.DeserializeObject<Dictionary<string, string>>(obj.CashDetails);
+            }
+            return View(obj);
+        }
+
+        public async Task<IActionResult> PrintTransaction(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var obj = await _context.Transactions
+                .Include(x => x.Cashier)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (obj == null)
             {
                 return NotFound();
             }
 
-            return View(obj);
+            return new ViewAsPdf("PrintTransaction", obj)
+            {
+                FileName = $"Transccion {id}.pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4
+            };
         }
 
-        public async Task<IActionResult> PrintTransaction(string id)
+        public async Task<IActionResult> PrintInvoice(string id)
         {
             if (id == null)
             {
@@ -101,7 +141,7 @@ namespace HospitalCashRegister.Controllers
                 return NotFound();
             }
 
-            return new ViewAsPdf("PrintTransaction", obj)
+            return new ViewAsPdf("PrintInvoice", obj)
             {
                 FileName = $"Transccion {id}.pdf",
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
@@ -110,6 +150,11 @@ namespace HospitalCashRegister.Controllers
         }
 
         public IActionResult Create()
+        {
+            return View();
+        }
+
+        public IActionResult CreatePayment()
         {
 
             var patiens = _context.Patients.ToList();
@@ -128,13 +173,6 @@ namespace HospitalCashRegister.Controllers
         {
             var userId = User.FindFirst("UserId")?.Value;
             var cashregisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
-            var services = new List<MedicalService>();
-
-
-            foreach (var serviceId in obj.ServiceIds)
-            {
-               services.Add(_context.MedicalServices.FirstOrDefault(x => x.Id == serviceId));
-            }
 
             if (userId == null || cashregisterId == null)
                 throw new Exception();
@@ -144,16 +182,8 @@ namespace HospitalCashRegister.Controllers
                 obj.Id = Guid.NewGuid().ToString();
                 obj.CashierId = userId;
                 obj.CashRegisterId = cashregisterId;
-                obj.Amount = services.Sum(s => s.Price);
 
                 _context.Add(obj);
-
-                _context.ServiceOrders.AddRange(services.Select(s => new ServiceOrder
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ServiceId = s.Id,
-                    TransactionId = obj.Id
-                }));
 
                 var currentCashRegister = _context.CashRegisters.FirstOrDefault(x => x.Id == cashregisterId);
                 
@@ -169,6 +199,55 @@ namespace HospitalCashRegister.Controllers
                     currentCashRegister.CashOutflow += obj.Amount;
                 }
 
+                _context.CashRegisters.Update(currentCashRegister);
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(obj);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePayment(Transaction obj)
+        {
+            var userId = User.FindFirst("UserId")?.Value;
+            var cashregisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
+            var services = new List<MedicalService>();
+
+
+            foreach (var serviceId in obj.ServiceIds)
+            {
+                services.Add(_context.MedicalServices.FirstOrDefault(x => x.Id == serviceId));
+            }
+
+            if (userId == null || cashregisterId == null)
+                throw new Exception();
+
+            if (ModelState.IsValid)
+            {
+                obj.Id = Guid.NewGuid().ToString();
+                obj.CashierId = userId;
+                obj.CashRegisterId = cashregisterId;
+                obj.Amount = services.Sum(s => s.Price);
+                obj.TransactionTypeId = TransactionType.ServicePayment;
+
+                _context.Add(obj);
+
+                _context.ServiceOrders.AddRange(services.Select(s => new ServiceOrder
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ServiceId = s.Id,
+                    TransactionId = obj.Id
+                }));
+
+                var currentCashRegister = _context.CashRegisters.FirstOrDefault(x => x.Id == cashregisterId);
+
+                if (currentCashRegister == null)
+                    throw new Exception();
+
+                currentCashRegister.CashInflow += obj.Amount;
                 _context.CashRegisters.Update(currentCashRegister);
 
                 await _context.SaveChangesAsync();
@@ -254,6 +333,12 @@ namespace HospitalCashRegister.Controllers
             _context.Cashiers.Update(obj);
             await _context.SaveChangesAsync();*/
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult CashDetailsTable(string cashDeatilsRaw)
+        {
+            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(cashDeatilsRaw);
+            return View(data); 
         }
 
         private bool EntityExists(string id)
