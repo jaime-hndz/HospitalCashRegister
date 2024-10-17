@@ -74,7 +74,7 @@
     </div>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <partial name="EditButton"  model=Model />
     <partial name="GoToIndex" />
 </p>
 

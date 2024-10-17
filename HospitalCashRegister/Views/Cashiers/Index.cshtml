@@ -7,12 +7,12 @@
 <h2>Cajeros</h2>
 
 <p>
-    <a asp-action="Create">Crear un nuevo Cajero</a>
+    <a asp-action="Create" class="btn btn-outline-primary">Crear un nuevo Cajero</a>
 </p>
 
 <table class="table">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>Usuario</th>
             <th>Nombre completo</th>
             <th>Sucursal</th>
@@ -32,9 +32,9 @@
                         @Html.CheckBoxFor(modelItem => item.Admin, new { @class = "form-check-input", @onclick = "return false;" })
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    <partial name="DetailsButton" model=item />
+                    <partial name="EditButton" model=item />
+                    <partial name="DeleteButton" model=item />
                 </td>
             </tr>
         }

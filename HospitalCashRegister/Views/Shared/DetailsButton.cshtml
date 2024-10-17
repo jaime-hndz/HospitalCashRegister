@@ -1,0 +1,7 @@
+﻿@model dynamic
+
+@{
+    string id = Model.Id.ToString();
+}
+
+<a asp-action="Details" asp-route-id="@id" class="btn btn-info">Detalles</a>

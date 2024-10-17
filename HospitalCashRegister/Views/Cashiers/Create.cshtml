@@ -24,8 +24,11 @@
                 <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
 
-                <label asp-for="Admin" class="control-label">Administrador</label>
-                <input type="checkbox" asp-for="Admin" id="adminCheckbox" />
+                <div class="my-3">
+                    <input type="checkbox" asp-for="Admin" id="adminCheckbox" class="btn-check" autocomplete="off" />
+                    <label for="adminCheckbox" class="btn btn-primary">Marcar como administrador</label>
+
+                </div>
 
                 <div id="branchField">
                     <label asp-for="BranchId" class="control-label">Sucursal</label>
@@ -33,16 +36,14 @@
                     <span asp-validation-for="BranchId" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group my-2.5">
                 <input type="submit" value="Crear" class="btn btn-primary" />
+                <partial name="GoToIndex" />
+
             </div>
         </form>
     </div>
 </div>
-
-<p>
-    <partial name="GoToIndex" />
-</p>
 
 @section Scripts {
     <script>

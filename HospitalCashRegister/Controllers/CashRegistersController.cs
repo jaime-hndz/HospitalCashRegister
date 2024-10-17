@@ -58,6 +58,7 @@ namespace HospitalCashRegister.Controllers
                 return View(
                     await _context.CashRegisters
                         .Where(cr => cr.BranchId == branchId)
+                        .Include(x => x.Branch)
                         .OrderByDescending(x => x.OpeningDate)
                         .ToListAsync()
                 );
@@ -67,6 +68,7 @@ namespace HospitalCashRegister.Controllers
             {
                 return View(
                     await _context.CashRegisters
+                        .Include(x => x.Branch)
                         .OrderByDescending(x => x.OpeningDate)
                         .ToListAsync()
                 );

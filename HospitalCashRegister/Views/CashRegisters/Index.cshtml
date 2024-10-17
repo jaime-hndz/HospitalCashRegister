@@ -11,11 +11,11 @@
     <p>
         @if (ViewBag.CashRegisterId == null)
         {
-            <a asp-action="Start">Iniciar día</a>
+            <a asp-action="Start" class="btn btn-outline-success">Iniciar día</a>
         }
         else
         {
-            <a asp-action="End">Terminar día</a>
+            <a asp-action="End" class="btn btn-outline-warning">Terminar día</a>
         }
     </p>
 }
@@ -23,7 +23,7 @@
 
 <table class="table">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>Fecha de inicio</th>
             <th>Fecha final</th>
             <th>Monto inicial</th>
@@ -31,6 +31,7 @@
             <th>Entrada</th>
             <th>Salida</th>
             <th>Estatus</th>
+            <th>Sucursal</th>
             <th></th>
         </tr>
     </thead>
@@ -44,11 +45,20 @@
                 <td>@item.FinalAmount</td>
                 <td>@item.CashInflow</td>
                 <td>@item.CashOutflow</td>
-                <td>@item.CashRegisterStatusId</td>
+                <td>@item.Branch?.Name</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                    <a asp-action="PrintCashRegister" asp-route-id="@item.Id">Imprimir</a> 
+                    @if (@item.CashRegisterStatusId == CashRegisterStatus.Open)
+                    {
+                        <span class="badge bg-success">Abierto</span>
+                    }
+                    else{
+                        <span class="badge bg-danger">Cerrado</span>
+                    }
+                </td>
+                <td>
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> | *@
+                    <a asp-action="PrintCashRegister" asp-route-id="@item.Id" class="btn btn-info">Imprimir</a> 
 
                     @* |
                     <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a> *@

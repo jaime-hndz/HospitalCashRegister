@@ -9,35 +9,53 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" id="transactionForm">
-            <div class="form-group">
+    <div>
+        <form asp-action="Create" id="transactionForm" class="flex">
 
-                <br />
-                <label asp-for="TransactionTypeId" class="control-label">Tipo</label>
-                <input checked type="radio" value="0" asp-for="TransactionTypeId" name="TransactionTypeId" /> Entrada
-                <input type="radio" value="1" asp-for="TransactionTypeId" name="TransactionTypeId" /> Salida
-                <span asp-validation-for="TransactionTypeId" class="text-danger"></span>
+            <div class="col-md-4">
+                <div class="form-group">
 
-                <br />
-                <label asp-for="Comment" class="control-label">Comentario</label>
-                <input asp-for="Comment" class="form-control" required />
-                <span asp-validation-for="Comment" class="text-danger"></span>
+                    <br />
 
-                <br />
-                <label asp-for="Amount" class="control-label">Monto</label>
-                <input asp-for="Amount" class="form-control" required id="amountInput" type="number" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
+                    <label asp-for="TransactionTypeId" class="control-label">Tipo</label>
+                    <div>
+                        <input checked type="radio" value="0" class="btn-check" name="TransactionTypeId" id="btnradio1" autocomplete="off" checked="">
+                        <label class="btn btn-outline-primary" for="btnradio1">Entrada</label>
+                        <input type="radio" value="1" class="btn-check" name="TransactionTypeId" id="btnradio2" autocomplete="off" checked="">
+                        <label class="btn btn-outline-primary" for="btnradio2">Salida</label>
+                    </div>
+                    <span asp-validation-for="TransactionTypeId" class="text-danger"></span>
 
-                <div>
-                    <input type="checkbox" id="cashCheckbox" /> ¿Transacción en efectivo?
+
+                    <br />
+                    <label asp-for="Amount" class="control-label">Monto</label>
+                    <input asp-for="Amount" class="form-control" required id="amountInput" type="number" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+
+                    <br />
+                    <label asp-for="Comment" class="control-label">Comentario</label>
+                    @Html.TextAreaFor(x => x.Comment, new {@class = "form-control", required = "required"})
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+
+                    <div class="my-3">
+                        <input type="checkbox" id="cashCheckbox" class="btn-check" autocomplete="off" />
+                        <label for="cashCheckbox" class="btn btn-primary">¿Transacción en efectivo?</label>
+
+                    </div>
                 </div>
+                <div class="form-group my-2.5">
+                    <input type="submit" value="Crear" class="btn btn-primary" id="submitButton" />
+                    <partial name="GoToIndex" />
+                </div>
+            </div>
+
+            <div class="col-md-4 ml-8">
                 <!-- Tabla de detalles de efectivo -->
-                <div id="cashField" style="display:none;">
+                <div id="cashField" style="display:none;" class="border-dashed  border-2 p-3 ">
                     <h4>Detalles de efectivo</h4>
                     <table class="table">
                         <thead>
-                            <tr>
+                            <tr class="table-primary">
                                 <th>Moneda</th>
                                 <th>Cantidad</th>
                             </tr>
@@ -58,16 +76,9 @@
                     <input type="hidden" asp-for="CashDetails" id="CashDetails" />
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" id="submitButton" />
-            </div>
         </form>
     </div>
 </div>
-
-<p>
-    <partial name="GoToIndex" />
-</p>
 
 @section Scripts {
     <script>
@@ -136,6 +147,7 @@
             // Asocia el evento change al checkbox
             document.getElementById("cashCheckbox").addEventListener("change", toggleCashField);
 
+             document.getElementById("amountInput").addEventListener("change", toggleSubmitButton);
             // Calcula el total cada vez que se cambie un valor en los inputs
             $('.cash-amount').on('input', calculateTotalCash);
 

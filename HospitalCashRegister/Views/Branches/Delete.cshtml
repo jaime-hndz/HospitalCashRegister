@@ -20,8 +20,10 @@
     </dl>
 
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Cancelar</a>
+        <div class="my-2.5">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            <a asp-action="Index" class="btn">Cancelar</a>
+        </div>
     </form>
 </div>

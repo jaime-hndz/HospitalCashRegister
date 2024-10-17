@@ -7,11 +7,11 @@
 <h1>Pacientes</h1>
 
 <p>
-    <a asp-action="Create">Crear nuevo paciente</a>
+    <a asp-action="Create" class="btn btn-outline-primary">Crear nuevo paciente</a>
 </p>
 <table class="table">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 Nombre 
             </th>
@@ -49,13 +49,14 @@
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
+                <partial name="DetailsButton" model=item />
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> <span>|</span>
+                    <partial name="EditButton" model=item />
                         
+
+                    <partial name="DeleteButton" model=item />
                 }
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
             </td>
         </tr>
 }

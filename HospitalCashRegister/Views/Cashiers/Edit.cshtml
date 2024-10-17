@@ -17,9 +17,6 @@
                 <input asp-for="Username" class="form-control" />
                 <span asp-validation-for="Username" class="text-danger"></span>
 
-                <label asp-for="Password" class="control-label">Contraseña</label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
 
                 <label asp-for="FullName" class="control-label">Nombre completo</label>
                 <input asp-for="FullName" class="form-control" />
@@ -34,13 +31,11 @@
                     <span asp-validation-for="BranchId" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group my-2.5">
                 <input type="submit" value="Guardar" class="btn btn-primary" />
+                <partial name="GoToIndex" />
             </div>
         </form>
     </div>
 </div>
 
-<p>
-    <partial name="GoToIndex" />
-</p>

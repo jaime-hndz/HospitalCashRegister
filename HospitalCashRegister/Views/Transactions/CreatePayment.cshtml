@@ -9,33 +9,42 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div>
         <label>Total a pagar: RD$ <span id="totalPayment">0</span></label>
-        <form asp-action="CreatePayment" id="transactionForm">
-            <div class="form-group">
-                <label asp-for="PatientId" class="control-label">Paciente</label>
-                <select asp-for="PatientId" class="form-control" asp-items="ViewBag.Patients"></select>
-                <span asp-validation-for="PatientId" class="text-danger"></span>
+        <form asp-action="CreatePayment" id="transactionForm" class="flex">
+            <div class="col-md-4 ml-8">
+                <div class="form-group">
+                    <label asp-for="PatientId" class="control-label">Paciente</label>
+                    <select asp-for="PatientId" class="form-control" asp-items="ViewBag.Patients"></select>
+                    <span asp-validation-for="PatientId" class="text-danger"></span>
 
-                <label asp-for="ServiceIds" class="control-label">Servicios médicos</label>
-                @Html.ListBoxFor(m => m.ServiceIds, (SelectList)ViewBag.MedicalServices, new { @class = "form-control select2" })
+                    <label asp-for="ServiceIds" class="control-label">Servicios médicos</label>
+                    @Html.ListBoxFor(m => m.ServiceIds, (SelectList)ViewBag.MedicalServices, new { @class = "form-control select2", required = "required" })
 
-                <br />
-                <label asp-for="Comment" class="control-label">Comentario</label>
-                <input asp-for="Comment" class="form-control" />
-                <span asp-validation-for="Comment" class="text-danger"></span>
+                    <br />
+                    <label asp-for="Comment" class="control-label">Comentario</label>
+                    @Html.TextAreaFor(x => x.Comment, new { @class = "form-control" })
+                    <span asp-validation-for="Comment" class="text-danger"></span>
 
-                <!-- Checkbox para Cash -->
-                <div>
-                    <input type="checkbox" id="cashCheckbox" /> ¿Pago en efectivo?
+                    <!-- Checkbox para Cash -->
+                    <div class="my-3">
+                        <input type="checkbox" id="cashCheckbox" class="btn-check" autocomplete="off" />
+                        <label for="cashCheckbox" class="btn btn-primary">¿Transacción en efectivo?</label>
+
+                    </div>
+                    <div class="form-group my-2.5">
+                        <input type="submit" value="Crear" class="btn btn-primary" id="submitButton" />
+                        <partial name="GoToIndex" />
+                    </div>
                 </div>
-
+            </div>
+            <div class="col-md-4 ml-8">
                 <!-- Tabla de detalles de efectivo -->
-                <div id="cashField" style="display:none;">
+                <div id="cashField" style="display:none;" class="border-dashed  border-2 p-3 ">
                     <h4>Detalles de efectivo</h4>
                     <table class="table">
                         <thead>
-                            <tr>
+                            <tr class="table-primary">
                                 <th>Moneda</th>
                                 <th>Cantidad</th>
                             </tr>
@@ -45,29 +54,23 @@
                             {
                                 <tr>
                                     <td>RD$ @item</td>
-                                    <td><input type="number" class="form-control cash-amount" data-denomination="@item" value="0" /></td>
+                                    <td><input type="number" class=" cash-amount" data-denomination="@item" value="0" /></td>
                                 </tr>
                             }
                         </tbody>
                     </table>
 
-                    <!-- Mostrar el total -->
                     <label>Total efectivo: RD$ <span id="totalCash">0</span></label>
 
-                    <!-- Campo oculto para guardar el JSON resultante -->
                     <input type="hidden" asp-for="CashDetails" id="CashDetails" />
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" id="submitButton" />
-            </div>
+
+
+
         </form>
     </div>
 </div>
-
-<p>
-    <partial name="GoToIndex" />
-</p>
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>

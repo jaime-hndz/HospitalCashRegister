@@ -18,7 +18,7 @@
         </dd>
     </dl>
 </div>
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+<div class="my-2.5">
+    <partial name="EditButton" model=Model />
     <partial name="GoToIndex" />
-</p>
+</div>
