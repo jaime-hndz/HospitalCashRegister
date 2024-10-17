@@ -8,8 +8,11 @@
 {
     <h2>Transacciones</h2>
     <p>
+            @if (!User.IsInRole("Admin"))
+        {
             <a asp-action="Create">Nueva transacción</a>
             <a asp-action="CreatePayment">Nuevo Pago</a>
+        }
 
     </p>
     <table class="table">
@@ -38,16 +41,17 @@
                     <td>@item.Date</td>
                     <td>@item.Comment</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                         @if(item.TransactionTypeId == TransactionType.ServicePayment)
                         {
                             <a asp-action="PrintInvoice" asp-route-id="@item.Id">Imprimir</a> 
+                            <span>|</span>
                             <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
 
                         }
                         else
                         {
                             <a asp-action="PrintTransaction" asp-route-id="@item.Id">Imprimir</a>
+                            <span>|</span>
                             <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
  
 
