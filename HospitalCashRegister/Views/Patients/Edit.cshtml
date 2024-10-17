@@ -2,12 +2,12 @@
 @model HospitalCashRegister.Models.Patient
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
-<h4>Patient</h4>
+<h4>Paciente</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,27 +15,27 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Nombre</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Document" class="control-label"></label>
+                <label asp-for="Document" class="control-label">Cédula</label>
                 <input asp-for="Document" class="form-control" />
                 <span asp-validation-for="Document" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNumber1" class="control-label"></label>
+                <label asp-for="PhoneNumber1" class="control-label">No. Telefónico 1</label>
                 <input asp-for="PhoneNumber1" class="form-control" />
                 <span asp-validation-for="PhoneNumber1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNumber2" class="control-label"></label>
+                <label asp-for="PhoneNumber2" class="control-label">No. Telefónico 2</label>
                 <input asp-for="PhoneNumber2" class="form-control" />
                 <span asp-validation-for="PhoneNumber2" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
+                <label asp-for="Address" class="control-label">Dirección</label>
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
@@ -47,7 +47,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a la lista</a>
 </div>
 
 @section Scripts {

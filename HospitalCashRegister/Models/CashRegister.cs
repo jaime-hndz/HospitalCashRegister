@@ -11,7 +11,7 @@ namespace HospitalCashRegister.Models
         public decimal CashInflow { get; set; } = 0.00M;
         public decimal CashOutflow { get; set; } = 0.00M;
         public decimal FinalAmount { get; set; } = 0.00M;
-        public int CashRegisterStatusId { get; set; } = 0;
+        public CashRegisterStatus CashRegisterStatusId { get; set; } = 0;
         public Cashier? Cashier { get; set; } = default!;
         public Branch? Branch { get; set; } = default!;
 

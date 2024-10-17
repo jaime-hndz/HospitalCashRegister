@@ -207,7 +207,7 @@ namespace HospitalCashRegister.Controllers
         {
             var obj = await _context.CashRegisters.FindAsync(id);
             if (obj == null) throw new Exception("Este registro no existe");
-            obj.CashRegisterStatusId = 1;
+            obj.CashRegisterStatusId = CashRegisterStatus.Closed;
             obj.ClosingDate = DateTime.Now;
             obj.FinalAmount = obj.InitialAmount + obj.CashInflow - obj.CashOutflow;
             _context.CashRegisters.Update(obj);

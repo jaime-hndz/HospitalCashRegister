@@ -28,7 +28,9 @@
                 <td>@item.Username</td>
                 <td>@item.FullName</td>
                 <td>@item.Branch?.Name</td>
-                <td>@item.Admin</td>
+                <td>
+                        @Html.CheckBoxFor(modelItem => item.Admin, new { @class = "form-check-input", @onclick = "return false;" })
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
