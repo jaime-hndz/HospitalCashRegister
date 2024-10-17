@@ -61,6 +61,10 @@
     </dl>
 </div>
 <div class="my-2.5">
-    <partial name="EditButton" model=Model />
+    @if (User.IsInRole("Admin"))
+    {
+        <partial name="EditButton" model=Model />
+
+    }
     <partial name="GoToIndex" />
 </div>

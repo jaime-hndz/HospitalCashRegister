@@ -90,12 +90,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FzaFJlZ2lzdGVyc1xTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Home/AdminHome.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pbkhvbWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Home/UserHome.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxVc2VySG9tZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jojo/Documents/TRABAJO FINAL IDS3/HospitalCashRegister/HospitalCashRegister/Views/Patients/Create.cshtml]

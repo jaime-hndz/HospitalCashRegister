@@ -1,61 +1,58 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    // Extraemos el nombre completo desde ViewBag y lo formateamos para la URL del avatar
+    string fullName = ViewBag.FullName != null ? ViewBag.FullName.Replace(" ", "-") : "Usuario";
+    string avatarUrl = $"https://ui-avatars.com/api/?name={fullName}&background=random";
 }
 
-<div>
-    <div>
-        <h1>@ViewBag.Username</h1>
-        <h2>@ViewBag.FullName</h2>
-        <h3>@ViewBag.BranchName</h3>
-        <h3></h3>
+<!-- Main container for the user card -->
+<div class="flex">
 
-    </div>
+    <div class=" flex-col md:flex-row items-center bg-light p-6 shadow-lg rounded-lg max-w-2xl mx-4 space-y-6 md:space-y-0 md:space-x-8">
+        <div class="flex flex-col items-center">
+            <!-- Avatar (dynamic from UI Avatars API) -->
+            <img class="w-32 h-32 rounded-full border-2 border-primary" src="@avatarUrl" alt="User Avatar" />
 
-    @if (User.IsInRole("Admin"))
-    {
-            <a class="nav-link text-dark" asp-area="" asp-controller="Cashiers" asp-action="Index">Cajeros</a>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Branches" asp-action="Index">Sucursales</a>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Histórico Transacciones</a>
-            <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="Index">Histórico Días</a>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Patients" asp-action="Index">Pacientes</a>
-    }
-    else
-    {
-        <div>
-            @if (@ViewBag.CashRegisterId == null)
+            <!-- User details -->
+            <div class="mt-4 text-center">
+                <h2 class="text-xl font-semibold">Usuario</h2>
+                <h1 class="text-2xl font-bold text-primary">@ViewBag.Username</h1>
+            </div>
+
+            <div class="mt-2 text-center">
+                <h2 class="text-xl font-semibold">Nombre Completo</h2>
+                <h1 class="text-2xl font-bold text-secondary">@ViewBag.FullName</h1>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ViewBag.BranchName))
             {
-                <div>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="Start">Iniciar día</a>
-                </div>
-                <div disabled>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Transaction" asp-action="Create">Nueva transacción</a>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Transaction" asp-action="Create">Nuevo Pago</a>
-
-                    <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="End">Terminar día</a>
+                <div class="mt-2 text-center">
+                    <h2 class="text-xl font-semibold">Estación</h2>
+                    <h1 class="text-2xl font-bold text-info">@ViewBag.BranchName</h1>
                 </div>
             }
-            else
-            {
-                <div disabled>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="Start">Iniciar día</a>
-                </div>
-                <div>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Create">Nueva transacción</a>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Create">Nuevo Pago</a>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="CashRegisters" asp-action="End">Terminar día</a>
-                </div>
-
-            }
-
         </div>
-    }
+    </div>
+    <!-- User info container -->
 
+
+    <!-- Admin/User specific content -->
+    <div>
+        @if (User.IsInRole("Admin"))
+        {
+            <partial name="AdminHome" />
+        }
+        else
+        {
+            <partial name="UserHome" />
+        }
+    </div>
 </div>
+
 <style>
-    div[disabled] {
+    a[disabled] {
         pointer-events: none;
         opacity: 0.5;
-        background: #CCC;
-        width: fit-content;
     }
 </style>

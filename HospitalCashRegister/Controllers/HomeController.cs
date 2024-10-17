@@ -23,7 +23,7 @@ namespace HospitalCashRegister.Controllers
             CheckCashRegister();
             ViewBag.Username = User.Identity?.Name;
             ViewBag.FullName = User.FindFirst("FullName")?.Value;
-            ViewBag.BranchName = User.FindFirst("BranchName")?.Value ?? HttpContext.Session.GetString("SessionBranchName");
+            ViewBag.BranchName = User.FindFirst("BranchName")?.Value;
             ViewBag.CashRegisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
             return View();
 
