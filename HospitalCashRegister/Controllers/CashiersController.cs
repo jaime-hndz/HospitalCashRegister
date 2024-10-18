@@ -52,7 +52,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Cashier obj)
+        public async Task<IActionResult> Create(Cashier obj, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace HospitalCashRegister.Controllers
                 obj.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(obj.Password,11,BCrypt.Net.HashType.SHA256);
 
                 _context.Add(obj);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(obj);
@@ -89,7 +89,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Cashier obj)
+        public async Task<IActionResult> Edit(string id, Cashier obj, CancellationToken cancellationToken)
         {
             if (id != obj.Id)
             {
@@ -102,7 +102,7 @@ namespace HospitalCashRegister.Controllers
                 {
                     obj.Modified = DateTime.Now;
                     _context.Update(obj);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(cancellationToken);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,13 +139,13 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id, CancellationToken cancellationToken)
         {
             var obj = await _context.Cashiers.FindAsync(id);
             if (obj == null) throw new Exception("Este registro no existe");
             obj.Status = false;
             _context.Cashiers.Update(obj);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
 

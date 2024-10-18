@@ -2,6 +2,7 @@
 using HospitalCashRegister.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace HospitalCashRegister.Controllers
 {
@@ -19,7 +20,7 @@ namespace HospitalCashRegister.Controllers
             return View(await _context.Branches.Where(x => x.Status == true).ToListAsync());
         }
 
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string id, CancellationToken cancellationToken)
         {
             if (id == null)
             {
@@ -27,7 +28,7 @@ namespace HospitalCashRegister.Controllers
             }
 
             var branch = await _context.Branches
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
             if (branch == null)
             {
                 return NotFound();
@@ -43,14 +44,14 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Status")] Branch branch)
+        public async Task<IActionResult> Create([Bind("Id,Name,Status")] Branch branch, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
                 branch.Id = Guid.NewGuid().ToString();
 
                 _context.Add(branch);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(branch);
@@ -73,7 +74,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Status")] Branch branch)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Status")] Branch branch, CancellationToken cancellationToken)
         {
             if (id != branch.Id)
             {
@@ -86,7 +87,7 @@ namespace HospitalCashRegister.Controllers
                 {
                     branch.Modified = DateTime.Now;
                     _context.Update(branch);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(cancellationToken);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -104,7 +105,7 @@ namespace HospitalCashRegister.Controllers
             return View(branch);
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
         {
             if (id == null)
             {
@@ -112,7 +113,7 @@ namespace HospitalCashRegister.Controllers
             }
 
             var branch = await _context.Branches
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
             if (branch == null)
             {
                 return NotFound();
@@ -123,13 +124,13 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id, CancellationToken cancellationToken)
         {
             var branch = await _context.Branches.FindAsync(id);
             if (branch == null) throw new Exception("Este registro no existe");
             branch.Status = false;
             _context.Branches.Update(branch);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
 

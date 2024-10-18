@@ -48,14 +48,14 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Patient obj)
+        public async Task<IActionResult> Create(Patient obj, CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)
             {
                 obj.Id = Guid.NewGuid().ToString();
 
                 _context.Add(obj);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(obj);
@@ -80,7 +80,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Patient obj)
+        public async Task<IActionResult> Edit(string id, Patient obj, CancellationToken cancellationToken)
         {
             if (id != obj.Id)
             {
@@ -93,7 +93,7 @@ namespace HospitalCashRegister.Controllers
                 {
                     obj.Modified = DateTime.Now;
                     _context.Update(obj);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(cancellationToken);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -130,13 +130,13 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id, CancellationToken cancellationToken)
         {
             var obj = await _context.Patients.FindAsync(id);
             if (obj == null) throw new Exception("Este registro no existe");
             obj.Status = false;
             _context.Patients.Update(obj);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
 

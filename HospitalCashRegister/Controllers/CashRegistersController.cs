@@ -111,7 +111,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Start(CashRegister obj)
+        public async Task<IActionResult> Start(CashRegister obj, CancellationToken cancellationToken)
         {
             var branchId = User.FindFirst("BranchId")?.Value;
             var cashierId = User.FindFirst("UserId")?.Value;
@@ -128,7 +128,7 @@ namespace HospitalCashRegister.Controllers
 
                 HttpContext.Session.SetString("CurrentCashRegisterId", id);
                 _context.Add(obj);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return RedirectToAction(nameof(Index));
             }
             return View(obj);
@@ -152,7 +152,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Cashier obj)
+        public async Task<IActionResult> Edit(string id, Cashier obj, CancellationToken cancellationToken)
         {
             if (id != obj.Id)
             {
@@ -165,7 +165,7 @@ namespace HospitalCashRegister.Controllers
                 {
                     obj.Modified = DateTime.Now;
                     _context.Update(obj);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(cancellationToken);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -205,7 +205,7 @@ namespace HospitalCashRegister.Controllers
 
         [HttpPost, ActionName("End")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EndConfirmed(string id)
+        public async Task<IActionResult> EndConfirmed(string id, CancellationToken cancellationToken)
         {
             var obj = await _context.CashRegisters.FindAsync(id);
             if (obj == null) throw new Exception("Este registro no existe");
@@ -213,7 +213,7 @@ namespace HospitalCashRegister.Controllers
             obj.ClosingDate = DateTime.Now;
             obj.FinalAmount = obj.InitialAmount + obj.CashInflow - obj.CashOutflow;
             _context.CashRegisters.Update(obj);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             HttpContext.Session.Remove("CurrentCashRegisterId");
 
             return RedirectToAction("EndToPrint", new { Id = id });

@@ -26,7 +26,7 @@ namespace HospitalCashRegister.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(string username, string password, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
@@ -36,7 +36,7 @@ namespace HospitalCashRegister.Controllers
 
             var cashier = await _context.Cashiers
                 .Include(c => c.Branch)
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
 
             if (cashier == null || !VerifyPassword(cashier, password))
             {
@@ -47,7 +47,7 @@ namespace HospitalCashRegister.Controllers
             cashier.LastSeen = DateTime.Now;
 
             _context.Cashiers.Update(cashier);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             // Aquí puedes implementar tu lógica de autenticación
             // Por ejemplo, usando Claims para manejar sesiones o cookies
