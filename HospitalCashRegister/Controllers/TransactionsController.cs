@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using NuGet.Common;
 using Rotativa.AspNetCore;
 
 namespace HospitalCashRegister.Controllers
@@ -15,21 +16,23 @@ namespace HospitalCashRegister.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<TransactionsController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public TransactionsController(ApplicationDbContext context, ILogger<TransactionsController> logger)
+        public TransactionsController(ApplicationDbContext context, ILogger<TransactionsController> logger, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
-
+            _configuration = configuration;
         }
 
         private async Task<List<MedicalService>> GetServices()
         {
-            string baseUrl = "https://localhost:7199/Servicios/GetServicios";
-            string stringBody = "Caja";
+            var baseUrl = _configuration.GetValue<string>("integration:Endpoint");
+            string token = _configuration.GetValue<string>("integration:Token");
+            string requestUrl = $"{baseUrl}/Servicios/GetServicios";
 
-            var result = await baseUrl
-                .PostJsonAsync(stringBody);
+            var result = await requestUrl
+                .PostJsonAsync(token);
 
             var obj = JsonConvert.DeserializeObject<List<dynamic>>(await result.GetStringAsync());
 
@@ -55,11 +58,12 @@ namespace HospitalCashRegister.Controllers
 
         private async Task<List<Patient>> GetPatients()
         {
-            string baseUrl = "https://localhost:7199/Usuario/GetUsuarioWIthCita";
-            string stringBody = "Caja";
+            var baseUrl = _configuration.GetValue<string>("integration:Endpoint");
+            string token = _configuration.GetValue<string>("integration:Token");
+            string requestUrl = $"{baseUrl}/Usuario/GetUsuarioWIthCita";
 
             var result = await baseUrl
-                .PostJsonAsync(stringBody);
+                .PostJsonAsync(token);
 
             var obj = JsonConvert.DeserializeObject<List<dynamic>>(await result.GetStringAsync());
 
@@ -201,8 +205,9 @@ namespace HospitalCashRegister.Controllers
         {
             try
             {
-                string baseUrl = "https://localhost:7199/Usuario/AddUsuario";
-                string stringBody = "Caja";
+                var baseUrl = _configuration.GetValue<string>("integration:Endpoint");
+                string token = _configuration.GetValue<string>("integration:Token");
+                string requestUrl = $"{baseUrl}/Usuario/AddUsuario";
 
                 foreach (var item in patients)
                 {
@@ -222,7 +227,7 @@ namespace HospitalCashRegister.Controllers
                         cedula = item.Document,
                         password = "Abc123*",
                         roleName = "Usuario",
-                        token = stringBody
+                        token = token
                     });
 
                 }
@@ -261,8 +266,9 @@ namespace HospitalCashRegister.Controllers
 
             try
             {
-                string baseUrl = "https://localhost:7199/Transaccion/AddTransaccion";
-                string stringBody = "Caja";
+                var baseUrl = _configuration.GetValue<string>("integration:Endpoint");
+                string token = _configuration.GetValue<string>("integration:Token");
+                string requestUrl = $"{baseUrl}/Transaccion/AddTransaccion";
 
                 var result = await baseUrl
                     .PostJsonAsync(new
@@ -274,7 +280,7 @@ namespace HospitalCashRegister.Controllers
                         monto = transaction.Amount,
                         fecha = transaction.Date,
                         comentario = transaction.Comment,
-                        token = stringBody
+                        token = token
                     });
 
                 var obj = JsonConvert.DeserializeObject<dynamic>(await result.GetStringAsync());
