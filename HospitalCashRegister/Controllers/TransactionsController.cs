@@ -1,9 +1,11 @@
 ﻿using Flurl.Http;
 using HospitalCashRegister.Data;
 using HospitalCashRegister.Models;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Rotativa.AspNetCore;
 
@@ -43,7 +45,8 @@ namespace HospitalCashRegister.Controllers
                     Id = item.id,
                     Price = item.costo,
                     Name = item.tipoServicio.descripcion + " " + item.areasMedicas.descripcion,
-                    Description = item.tipoServicio.descripcion + " " + item.areasMedicas.descripcion
+                    Description = item.tipoServicio.descripcion + " " + item.areasMedicas.descripcion,
+                    Status = item.estado
                 });
             }
 
@@ -78,6 +81,179 @@ namespace HospitalCashRegister.Controllers
             }
 
             return pacientes;
+        }
+
+        private async Task<bool> CheckServices(CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                var coreServices = await GetServices();
+                var localServices = _context.MedicalServices.ToList();
+
+
+                foreach (var service in coreServices)
+                {
+                    var existingService = localServices.FirstOrDefault(s => s.Id == service.Id);
+
+                    if (existingService != null)
+                    {
+                        if (!PropertiesDiff<MedicalService>(existingService, service)) continue;
+                        _context.Entry(existingService).CurrentValues.SetValues(service);
+                        _context.Update(existingService);
+                    }
+                    else
+                    {
+                        await _context.MedicalServices.AddAsync(service, cancellationToken);
+                    }
+                }
+
+/*                var listDelete = localServices.Where(x => !coreServices.Any(y => x.Id == y.Id));
+
+                foreach (var service in listDelete)
+                {
+                    service.Status = false;
+                }
+                _context.MedicalServices.UpdateRange(listDelete);*/
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
+
+        }
+
+        private async Task<bool> CheckPatients(CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                var corePatients = await GetPatients();
+                var localPatients = _context.Patients.ToList();
+
+
+                foreach (var patient in corePatients)
+                {
+                    var existing = localPatients.FirstOrDefault(s => s.Id == patient.Id);
+
+                    if (existing != null)
+                    {
+                        if (!PropertiesDiff<Patient>(existing, patient)) continue;
+                        _context.Entry(existing).CurrentValues.SetValues(patient);
+                        _context.Update(existing);
+                    }
+                    else
+                    {
+                        await _context.Patients.AddAsync(patient,cancellationToken);
+                    }
+                }
+
+                var unSyncPatients = localPatients.Where(x => !corePatients.Any(y => x.Document == y.Document)).ToList();
+
+                if (unSyncPatients != null)
+                {
+                    await PostPatients(unSyncPatients);
+                }
+
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
+
+        }
+
+        public async Task CheckTransactions(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var unappliedTransactions = _context.Transactions
+                    .Where(x => x.TransactionStatusId == TransctionStatus.pending)
+                    .ToList();
+
+                foreach (var item in unappliedTransactions)
+                {
+                    item.TransactionStatusId = await PostTransactions(item)
+                        ? TransctionStatus.applied
+                        : TransctionStatus.pending;
+                }
+
+                _context.Transactions.UpdateRange(unappliedTransactions);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.Message}");
+            }
+        }
+
+        public async Task<bool> PostPatients(List<Patient> patients)
+        {
+            try
+            {
+                string baseUrl = "https://localhost:7199/Usuario/AddUsuario";
+                string stringBody = "Caja";
+
+                foreach (var item in patients)
+                {
+                    string[] names = item.Name.Split(' ');
+
+                    var result = await baseUrl
+                    .PostJsonAsync(new
+                    {
+                        id = item.Id,
+                        userName = item.Id,
+                        email = item.Id,
+                        name = names[0],
+                        lastName = "",
+                        phoneNumber = item.PhoneNumber1,
+                        address = item.Address,
+                        birthday = DateAndTime.Now,
+                        cedula = item.Document,
+                        password = "Abc123*",
+                        roleName = "Usuario",
+                        token = stringBody
+                    });
+
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
+
+        }
+
+        private static bool PropertiesDiff<T>(T entidad1, T entidad2)
+        {
+            var propiedades = typeof(T).GetProperties();
+
+            foreach (var propiedad in propiedades)
+            {
+                object? valorEntidad1 = propiedad.GetValue(entidad1);
+                object? valorEntidad2 = propiedad.GetValue(entidad2);
+
+                if (!object.Equals(valorEntidad1, valorEntidad2))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private async Task<bool> PostTransactions(Transaction transaction)
@@ -116,10 +292,12 @@ namespace HospitalCashRegister.Controllers
 
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             try
             {
+                await CheckTransactions(cancellationToken);
+
                 var CashRegisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
 
                 if (CashRegisterId != null)
@@ -253,13 +431,18 @@ namespace HospitalCashRegister.Controllers
             return View();
         }
 
-        public async Task<IActionResult> CreatePayment()
+        public async Task<IActionResult> CreatePayment(CancellationToken cancellationToken)
         {
+            var syncServices = await CheckServices(cancellationToken);
+            var syncPatients = await CheckPatients(cancellationToken);
 
-            var patiens = await GetPatients();
+            if (!syncServices || !syncPatients)
+                _logger.LogError("No se sincronizaron los datos correctamente");
+
+            var patiens = _context.Patients.Where(x => x.Status == true).ToList();
             ViewBag.Patients = new SelectList(patiens, "Id", "Name");
 
-            var services = await GetServices();
+            var services = _context.MedicalServices.Where(x => x.Status == true).ToList();
             ViewBag.MedicalServices = new SelectList(services, "Id", "Name");
             ViewBag.ServicePrices = services.Select(x => new {x.Id, x.Price }).ToList();
 
