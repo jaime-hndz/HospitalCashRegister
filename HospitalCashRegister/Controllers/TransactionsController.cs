@@ -1,4 +1,5 @@
-﻿using HospitalCashRegister.Data;
+﻿using Flurl.Http;
+using HospitalCashRegister.Data;
 using HospitalCashRegister.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,10 +12,108 @@ namespace HospitalCashRegister.Controllers
     public class TransactionsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TransactionsController> _logger;
 
-        public TransactionsController(ApplicationDbContext context)
+        public TransactionsController(ApplicationDbContext context, ILogger<TransactionsController> logger)
         {
             _context = context;
+            _logger = logger;
+
+        }
+
+        private async Task<List<MedicalService>> GetServices()
+        {
+            string baseUrl = "https://localhost:7199/Servicios/GetServicios";
+            string stringBody = "Caja";
+
+            var result = await baseUrl
+                .PostJsonAsync(stringBody);
+
+            var obj = JsonConvert.DeserializeObject<List<dynamic>>(await result.GetStringAsync());
+
+            if (obj == null)
+                throw new Exception("Error al solicitar los servicios");
+
+            var servicios = new List<MedicalService>();
+
+            foreach (var item in obj)
+            {
+                servicios.Add(new MedicalService
+                {
+                    Id = item.id,
+                    Price = item.costo,
+                    Name = item.tipoServicio.descripcion + " " + item.areasMedicas.descripcion,
+                    Description = item.tipoServicio.descripcion + " " + item.areasMedicas.descripcion
+                });
+            }
+
+            return servicios;
+        }
+
+        private async Task<List<Patient>> GetPatients()
+        {
+            string baseUrl = "https://localhost:7199/Usuario/GetUsuarioWIthCita";
+            string stringBody = "Caja";
+
+            var result = await baseUrl
+                .PostJsonAsync(stringBody);
+
+            var obj = JsonConvert.DeserializeObject<List<dynamic>>(await result.GetStringAsync());
+
+            if (obj == null)
+                throw new Exception("Error al solicitar los pacientes");
+
+            var pacientes = new List<Patient>();
+
+            foreach (var item in obj)
+            {
+                pacientes.Add(new Patient
+                {
+                    Id = item.id,
+                    Name = item.name + " " + item.lastName,
+                    Document = item.cedula,
+                    Address = item.address
+                    
+                });
+            }
+
+            return pacientes;
+        }
+
+        private async Task<bool> PostTransactions(Transaction transaction)
+        {
+
+            try
+            {
+                string baseUrl = "https://localhost:7199/Transaccion/AddTransaccion";
+                string stringBody = "Caja";
+
+                var result = await baseUrl
+                    .PostJsonAsync(new
+                    {
+                        idCajero = transaction.CashierId,
+                        idPaciente = transaction.PatientId,
+                        idTipoTransaccion = (int)transaction.TransactionTypeId + 2,
+                        idEstadoTransaccion = (int)transaction.TransactionStatusId + 1,
+                        monto = transaction.Amount,
+                        fecha = transaction.Date,
+                        comentario = transaction.Comment,
+                        token = stringBody
+                    });
+
+                var obj = JsonConvert.DeserializeObject<dynamic>(await result.GetStringAsync());
+
+                if (obj == null)
+                    throw new Exception("Error al solicitar los pacientes");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
+
         }
 
         public async Task<IActionResult> Index()
@@ -154,13 +253,13 @@ namespace HospitalCashRegister.Controllers
             return View();
         }
 
-        public IActionResult CreatePayment()
+        public async Task<IActionResult> CreatePayment()
         {
 
-            var patiens = _context.Patients.ToList();
+            var patiens = await GetPatients();
             ViewBag.Patients = new SelectList(patiens, "Id", "Name");
 
-            var services = _context.MedicalServices.ToList();
+            var services = await GetServices();
             ViewBag.MedicalServices = new SelectList(services, "Id", "Name");
             ViewBag.ServicePrices = services.Select(x => new {x.Id, x.Price }).ToList();
 
@@ -199,8 +298,12 @@ namespace HospitalCashRegister.Controllers
                     currentCashRegister.CashOutflow += obj.Amount;
                 }
 
+
+                obj.TransactionStatusId = await PostTransactions(obj) ? TransctionStatus.applied : TransctionStatus.pending;
+
                 _context.CashRegisters.Update(currentCashRegister);
 
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -233,6 +336,8 @@ namespace HospitalCashRegister.Controllers
                 obj.Amount = services.Sum(s => s.Price);
                 obj.TransactionTypeId = TransactionType.ServicePayment;
 
+                obj.TransactionStatusId = await PostTransactions(obj) ? TransctionStatus.applied : TransctionStatus.pending;
+
                 _context.Add(obj);
 
                 _context.ServiceOrders.AddRange(services.Select(s => new ServiceOrder
@@ -249,6 +354,7 @@ namespace HospitalCashRegister.Controllers
 
                 currentCashRegister.CashInflow += obj.Amount;
                 _context.CashRegisters.Update(currentCashRegister);
+
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
