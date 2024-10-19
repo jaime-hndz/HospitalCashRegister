@@ -47,8 +47,7 @@
             <thead>
                 <tr>
                     <th>ID Transacción</th>
-                    <th>Servicio</th>
-                    <th>Paciente</th>
+                    <th>Comentario</th>
                     <th>Monto</th>
                     <th>Fecha</th>
                     <th>Tipo</th>
@@ -60,8 +59,7 @@
                 {
                     <tr>
                         <td>@transaction.Id</td>
-                        <td>@transaction.MedicalService.Name</td>
-                        <td>@transaction.Patient.Name</td>
+                        <td>@transaction.Comment</td>
                         <td>@transaction.Amount.ToString("C")</td>
                         <td>@transaction.Date.ToString("g")</td>
                         <td>@transaction.TransactionTypeId</td>

@@ -62,7 +62,7 @@ namespace HospitalCashRegister.Controllers
             string token = _configuration.GetValue<string>("integration:Token");
             string requestUrl = $"{baseUrl}/Usuario/GetUsuarioWIthCita";
 
-            var result = await baseUrl
+            var result = await requestUrl
                 .PostJsonAsync(token);
 
             var obj = JsonConvert.DeserializeObject<List<dynamic>>(await result.GetStringAsync());
@@ -213,7 +213,7 @@ namespace HospitalCashRegister.Controllers
                 {
                     string[] names = item.Name.Split(' ');
 
-                    var result = await baseUrl
+                    var result = await requestUrl
                     .PostJsonAsync(new
                     {
                         id = item.Id,
@@ -266,20 +266,21 @@ namespace HospitalCashRegister.Controllers
 
             try
             {
+
                 var baseUrl = _configuration.GetValue<string>("integration:Endpoint");
                 string token = _configuration.GetValue<string>("integration:Token");
                 string requestUrl = $"{baseUrl}/Transaccion/AddTransaccion";
 
-                var result = await baseUrl
+                var result = await requestUrl
                     .PostJsonAsync(new
                     {
                         idCajero = transaction.CashierId,
-                        idPaciente = transaction.PatientId,
-                        idTipoTransaccion = (int)transaction.TransactionTypeId + 2,
+                        idPaciente =  transaction.PatientId,
+                        idTipoTransaccion = (int)transaction.TransactionTypeId + 1,
                         idEstadoTransaccion = (int)transaction.TransactionStatusId + 1,
                         monto = transaction.Amount,
                         fecha = transaction.Date,
-                        comentario = transaction.Comment,
+                        comentario = transaction.Comment ?? "string",
                         token = token
                     });
 
@@ -480,11 +481,11 @@ namespace HospitalCashRegister.Controllers
 
                 if (obj.TransactionTypeId == TransactionType.CashInflow)
                 {
-                    currentCashRegister.CashInflow += obj.Amount;
+                    currentCashRegister.CashInflow = currentCashRegister.CashInflow + obj.Amount;
                 }
                 else
                 {
-                    currentCashRegister.CashOutflow += obj.Amount;
+                    currentCashRegister.CashOutflow = currentCashRegister.CashOutflow + obj.Amount;
                 }
 
 
@@ -541,7 +542,7 @@ namespace HospitalCashRegister.Controllers
                 if (currentCashRegister == null)
                     throw new Exception();
 
-                currentCashRegister.CashInflow += obj.Amount;
+                currentCashRegister.CashInflow = currentCashRegister.CashInflow + obj.Amount;
                 _context.CashRegisters.Update(currentCashRegister);
 
 
@@ -622,11 +623,33 @@ namespace HospitalCashRegister.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-/*            var obj = await _context.Cashiers.FindAsync(id);
-            if (obj == null) throw new Exception("Este registro no existe");
-            obj.Status = false;
-            _context.Cashiers.Update(obj);
-            await _context.SaveChangesAsync();*/
+            var currentTransaction = _context.Transactions.Include(x => x.CashRegister).FirstOrDefault(x => x.Id == id);
+
+            var currentCashRegister = currentTransaction?.CashRegister;
+
+            if (currentCashRegister == null)
+                throw new Exception("Error con el cash register");
+
+            if (currentCashRegister.CashRegisterStatusId == CashRegisterStatus.Open)
+            {
+                currentTransaction.TransactionStatusId = TransctionStatus.rollback;
+                if (currentTransaction.TransactionTypeId == TransactionType.CashOutflow)
+                {
+                    currentCashRegister.CashOutflow = currentCashRegister.CashOutflow - currentTransaction.Amount;
+
+                }
+                else
+                {
+                    currentCashRegister.CashInflow = currentCashRegister.CashInflow - currentTransaction.Amount;
+                }
+
+
+            }
+
+             _context.Transactions.Update(currentTransaction);
+             _context.CashRegisters.Update(currentCashRegister);
+            await _context.SaveChangesAsync();  
+
             return RedirectToAction(nameof(Index));
         }
 

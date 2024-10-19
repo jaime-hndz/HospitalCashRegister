@@ -58,12 +58,13 @@ CREATE TABLE TransactionStatus (
     Value VARCHAR(50) NOT NULL
 );
 
-drop table "Transaction"
+
 CREATE TABLE "Transaction" (
     _id VARCHAR(50) PRIMARY KEY,
     CashierId VARCHAR(50),
     PatientId VARCHAR(50),
     MedicalServiceId VARCHAR(50),
+	CashDetails VARCHAR(255),
 	CashRegisterId VARCHAR(50),
     TransactionTypeId INT NOT NULL,
     TransactionStatusId INT NOT NULL,
@@ -100,6 +101,12 @@ CREATE TABLE Receipt (
     Details VARCHAR(255), 
     FOREIGN KEY (TransactionId) REFERENCES "Transaction"(_id)
 );
+
+CREATE TABLE ServiceOrder(
+	_id VARCHAR(50) PRIMARY KEY,
+    TransactionId VARCHAR(50),
+    ServiceId VARCHAR(50)
+)
 
 
 INSERT INTO TransactionStatus(_id, value)

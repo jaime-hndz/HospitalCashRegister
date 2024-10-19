@@ -1,36 +1,14 @@
-﻿<div class="w-full grid gap-3">
-    <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-
-
-        @if (@ViewBag.CashRegisterId == null)
-        {
-            <a class="btn btn-success" asp-area="" asp-controller="CashRegisters" asp-action="Start">Iniciar día</a>
-            <a class="btn btn-secondary" asp-area="" asp-controller="Transaction" asp-action="Create" disabled>Nueva transacción</a>
-            <a class="btn btn-secondary" asp-area="" asp-controller="Transaction" asp-action="Create" disabled>Nuevo Pago</a>
-            <a class="btn btn-secondary" asp-area="" asp-controller="CashRegisters" asp-action="End" disabled>Terminar día</a>
-        }
-        else
-        {
-            <a class="btn btn-btn-secondary" asp-area="" asp-controller="CashRegisters" asp-action="Start" disabled>Iniciar día</a>
-            <a class="btn btn-primary" asp-area="" asp-controller="Transactions" asp-action="Create">Nueva transacción</a>
-            <a class="btn btn-info" asp-area="" asp-controller="Transactions" asp-action="CreatePayment">Nuevo Pago</a>
-            <a class="btn btn-warning" asp-area="" asp-controller="CashRegisters" asp-action="End">Terminar día</a>
-        }
-    </div>
-    <div>
-        <table class="table">
-            <thead>
-                <tr class="table-dark">
-                    <th>Cajero</th>
-                    <th>Monto</th>
-                    <th>Tipo</th>
-                    <th>Estatus</th>
-                    <th>Fecha</th>
-                    <th>Comentario</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
+﻿@if (@ViewBag.CashRegisterId == null)
+{
+    <a class="btn btn-success" asp-area="" asp-controller="CashRegisters" asp-action="Start">Iniciar día</a>
+    <a class="btn btn-secondary" asp-area="" asp-controller="Transaction" asp-action="Create" disabled>Nueva transacción</a>
+    <a class="btn btn-secondary" asp-area="" asp-controller="Transaction" asp-action="Create" disabled>Nuevo Pago</a>
+    <a class="btn btn-secondary" asp-area="" asp-controller="CashRegisters" asp-action="End" disabled>Terminar día</a>
+}
+else
+{
+    <a class="btn btn-btn-secondary" asp-area="" asp-controller="CashRegisters" asp-action="Start" disabled>Iniciar día</a>
+    <a class="btn btn-primary" asp-area="" asp-controller="Transactions" asp-action="Create">Nueva transacción</a>
+    <a class="btn btn-info" asp-area="" asp-controller="Transactions" asp-action="CreatePayment">Nuevo Pago</a>
+    <a class="btn btn-warning" asp-area="" asp-controller="CashRegisters" asp-action="End">Terminar día</a>
+}

@@ -37,16 +37,76 @@
     <!-- User info container -->
 
 
-    <!-- Admin/User specific content -->
-    <div>
-        @if (User.IsInRole("Admin"))
-        {
-            <partial name="AdminHome" />
-        }
-        else
-        {
-            <partial name="UserHome" />
-        }
+
+
+
+    <div class="w-full grid gap-3">
+        <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+            @if (User.IsInRole("Admin"))
+            {
+                <partial name="AdminHome" />
+            }
+            else
+            {
+                <partial name="UserHome" />
+            }
+        </div>
+        <div class="table-container" style="padding: 20px; border: 2px solid #ccc; height: 500px">
+            <table class="table" style="width: 100%;">
+                <thead>
+                    <tr class="table-dark">
+                        <th>Monto</th>
+                        <th>Tipo</th>
+                        <th>Estatus</th>
+                        <th>Fecha</th>
+                        <th>Comentario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.Transactions)
+                    {
+                        <tr>
+                            <td>@item.Amount</td>
+                            <td>
+                                @if (@item.TransactionTypeId == TransactionType.CashInflow)
+                                {
+                                    <span class="badge bg-success">Ingreso de efectivo</span>
+                                }
+                                else if (@item.TransactionTypeId == TransactionType.CashOutflow)
+                                {
+                                    <span class="badge bg-danger">Egreso de efectivo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info">Pago de servicio</span>
+
+                                }
+
+                            </td>
+                            <td>
+                                @if (@item.TransactionStatusId == TransctionStatus.applied)
+                                {
+                                    <span class="badge bg-success">Aplicada</span>
+                                }
+                                else if (@item.TransactionStatusId == TransctionStatus.pending)
+                                {
+                                    <span class="badge bg-warning">Pendiente</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Cancelada</span>
+
+                                }
+
+
+                            </td>
+                            <td>@item.Date</td>
+                            <td>@item.Comment</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

@@ -34,8 +34,6 @@ namespace HospitalCashRegister.Controllers
 
             var transactions = await _context.Transactions
                 .Where(x => x.CashRegisterId == obj.Id)
-                .Include(x => x.MedicalService)
-                .Include(x => x.Patient)
                 .ToListAsync();
 
             obj.transactions = transactions;

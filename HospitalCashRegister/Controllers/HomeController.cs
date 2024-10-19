@@ -25,6 +25,7 @@ namespace HospitalCashRegister.Controllers
             ViewBag.FullName = User.FindFirst("FullName")?.Value;
             ViewBag.BranchName = User.FindFirst("BranchName")?.Value;
             ViewBag.CashRegisterId = HttpContext.Session.GetString("CurrentCashRegisterId");
+            ViewBag.Transactions = _context.Transactions.ToList();
             return View();
 
         }
